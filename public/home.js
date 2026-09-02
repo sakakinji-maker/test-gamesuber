@@ -6,6 +6,13 @@ const GAMES = [
     description: '2~4인 온라인 멀티플레이 카드 게임. 사람이 부족하면 AI가 채워줘요.',
     path: '/onecard/',
   },
+  {
+    id: 'survival',
+    title: '핵전쟁 서바이벌',
+    genre: '액션 서바이벌',
+    description: '핵전쟁 이후 디스토피아에서 몰려오는 몬스터 속에 최대한 오래 살아남는 게임.',
+    path: '/survival/',
+  },
 ];
 
 function renderGames(list) {

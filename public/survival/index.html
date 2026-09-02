@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>핵전쟁 서바이벌</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="title-screen" class="screen">
+  <h1>핵전쟁 서바이벌</h1>
+  <p>폐허가 된 도시에서 방향키/WASD로 움직이며 최대한 오래 살아남으세요. 공격은 자동입니다.</p>
+  <p id="best-record"></p>
+  <button id="start-btn">시작하기</button>
+</section>
+
+<section id="game-screen" class="screen hidden">
+  <div id="hud">
+    <div id="hp-bar-outer"><div id="hp-bar-inner"></div></div>
+    <div id="xp-bar-outer"><div id="xp-bar-inner"></div></div>
+    <div id="hud-text">
+      <span id="hud-time">00:00</span>
+      <span id="hud-level">Lv.1</span>
+      <span id="hud-kills">처치 0</span>
+    </div>
+  </div>
+  <canvas id="game-canvas" width="900" height="600"></canvas>
+</section>
+
+<section id="levelup-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>레벨 업!</h2>
+    <p>강화할 항목을 선택하세요</p>
+    <div id="upgrade-cards"></div>
+  </div>
+</section>
+
+<section id="end-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2 id="end-title"></h2>
+    <p id="end-stats"></p>
+    <p id="end-best"></p>
+    <div id="end-rank-table"></div>
+    <button id="retry-btn">다시하기</button>
+  </div>
+</section>
+
+<script src="game.js"></script>
+</body>
+</html>
