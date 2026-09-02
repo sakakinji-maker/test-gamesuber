@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>원카드</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="nickname-screen" class="screen">
+  <h1>원카드</h1>
+  <p>닉네임을 입력하고 입장하세요.</p>
+  <input type="text" id="nickname-input" maxlength="10" placeholder="닉네임 (예: 여죽)">
+  <button id="enter-btn">입장하기</button>
+  <p id="nickname-error" class="error-text hidden">닉네임을 입력해주세요.</p>
+</section>
+
+<section id="lobby-entry-screen" class="screen hidden">
+  <h1>원카드</h1>
+  <p id="welcome-text"></p>
+  <button id="create-room-btn">방 만들기</button>
+  <div class="join-row">
+    <input type="text" id="join-code-input" maxlength="4" placeholder="방 코드 (예: 3F7K)">
+    <button id="join-room-btn">참가하기</button>
+  </div>
+  <button id="history-btn">전적 보기</button>
+  <button id="change-nickname-btn">닉네임 바꾸기</button>
+  <p id="lobby-entry-error" class="error-text hidden"></p>
+</section>
+
+<section id="lobby-room-screen" class="screen hidden">
+  <h1>대기실</h1>
+  <p>방 코드: <strong id="room-code-display"></strong> (친구에게 알려주세요)</p>
+  <div id="lobby-seats"></div>
+  <button id="start-game-btn" class="hidden">게임 시작</button>
+  <p id="lobby-wait-text" class="hidden">방장이 게임을 시작하길 기다리는 중...</p>
+</section>
+
+<section id="history-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>전적</h2>
+    <h3>누적 리더보드</h3>
+    <div id="leaderboard-body"></div>
+    <h3>최근 게임</h3>
+    <div id="recent-games-body"></div>
+    <button id="close-history-btn">닫기</button>
+  </div>
+</section>
+
+<section id="game-screen" class="screen hidden">
+  <div class="scoreboard" id="scoreboard"></div>
+  <div id="your-turn-banner" class="your-turn-banner hidden">당신의 차례입니다!</div>
+  <div id="waiting-suit-banner" class="your-turn-banner hidden"></div>
+
+  <div class="table">
+    <div class="seat seat-top" id="seat-2"></div>
+    <div class="seat seat-left" id="seat-1"></div>
+    <div class="seat seat-right" id="seat-3"></div>
+
+    <div class="center">
+      <div class="pile draw-pile" id="draw-pile">
+        <div class="card card-back"></div>
+        <span class="pile-count" id="draw-count"></span>
+      </div>
+      <div class="pile discard-pile" id="discard-pile"></div>
+      <div class="pending-attack" id="pending-attack"></div>
+    </div>
+
+    <div class="seat seat-bottom" id="seat-0">
+      <div class="seat-name" id="my-hand-label"></div>
+      <div class="hand" id="hand-0"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <span id="turn-indicator"></span>
+    <button id="play-selected-btn" class="hidden">카드 내기</button>
+    <button id="declare-btn" class="hidden">원카드!</button>
+  </div>
+
+  <div class="log" id="log"></div>
+</section>
+
+<section id="suit-picker" class="screen overlay hidden">
+  <div class="panel">
+    <h2>7 - 다음 무늬를 지정하세요</h2>
+    <div class="suit-options">
+      <button data-suit="♠">♠</button>
+      <button data-suit="♥">♥</button>
+      <button data-suit="♦">♦</button>
+      <button data-suit="♣">♣</button>
+    </div>
+  </div>
+</section>
+
+<section id="round-result" class="screen overlay hidden">
+  <div class="panel">
+    <h2 id="round-result-title"></h2>
+    <div id="round-result-body"></div>
+    <button id="next-round-btn">다음 라운드</button>
+    <p id="round-result-wait" class="hidden">방장이 다음으로 넘기길 기다리는 중...</p>
+  </div>
+</section>
+
+<section id="final-result" class="screen overlay hidden">
+  <div class="panel">
+    <h2>최종 결과</h2>
+    <div id="final-result-body"></div>
+    <button id="restart-btn">로비로 돌아가기</button>
+    <p id="final-result-wait" class="hidden">방장이 로비로 돌아가길 기다리는 중...</p>
+  </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
