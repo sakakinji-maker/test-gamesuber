@@ -61,8 +61,19 @@ body {
 #hud-text {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 13px;
   color: #b8b39f;
+}
+
+#mute-btn {
+  background: none;
+  border: 1px solid #4a4630;
+  border-radius: 6px;
+  color: #e8e4d8;
+  font-size: 14px;
+  padding: 2px 8px;
+  cursor: pointer;
 }
 
 #game-canvas {
@@ -70,6 +81,23 @@ body {
   border: 2px solid #4a4630;
   max-width: 100%;
 }
+
+#combat-log {
+  width: 900px;
+  max-width: 100%;
+  height: 110px;
+  overflow-y: auto;
+  margin-top: 8px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid #4a4630;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #d8d4c8;
+}
+#combat-log .drone-hit { color: #7ec8e3; }
+#combat-log .drone-kill { color: #ffd54f; font-weight: bold; }
 
 .overlay {
   position: fixed;

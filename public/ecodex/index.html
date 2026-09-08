@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>대한민국 생태계교란종 잡기</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="title-screen" class="screen">
+  <h1>대한민국 생태계교란종 잡기</h1>
+  <p>필드를 돌아다니며 생태계교란종을 만나 약화시킨 뒤 포획(채집)해서 도감을 완성하세요.</p>
+  <button id="new-game-btn">새 게임</button>
+  <button id="continue-btn" class="hidden">이어하기</button>
+</section>
+
+<section id="field-screen" class="screen hidden">
+  <div id="field-hud">
+    <span id="hud-level">Lv.1</span>
+    <span id="hud-hp">체력 20/20</span>
+    <span id="hud-gold">골드 0</span>
+    <span id="hud-dex">도감 0/3</span>
+    <button id="inventory-btn">인벤토리</button>
+    <button id="dex-btn">도감</button>
+  </div>
+  <canvas id="field-canvas" width="720" height="480"></canvas>
+  <p class="hint">방향키/WASD로 이동하세요. 마을 아래쪽 문(🚪)으로 나가면 풀숲으로 이동해요. 풀숲(🌾)에서 생태계교란종을 만날 수 있어요.</p>
+</section>
+
+<section id="dialogue-screen" class="screen overlay hidden">
+  <div class="panel">
+    <div id="dialogue-name" class="dialogue-name"></div>
+    <p id="dialogue-text"></p>
+    <button id="dialogue-close-btn">확인</button>
+  </div>
+</section>
+
+<section id="shop-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>상점</h2>
+    <p>보유 골드: <span id="shop-gold"></span></p>
+    <div class="shop-item">
+      <span>🧪 회복 물약 (체력 +15)</span>
+      <span>8 골드</span>
+      <button data-item="potion">구매</button>
+    </div>
+    <div class="shop-item">
+      <span>🥅 그물 (동물 포획용)</span>
+      <span>5 골드</span>
+      <button data-item="net">구매</button>
+    </div>
+    <div class="shop-item">
+      <span>✂️ 채집 도구 (식물 채집용)</span>
+      <span>5 골드</span>
+      <button data-item="planttool">구매</button>
+    </div>
+    <div class="shop-item">
+      <span>🪱 미끼 (낚시용)</span>
+      <span>4 골드</span>
+      <button data-item="bait">구매</button>
+    </div>
+    <p id="shop-msg"></p>
+    <button id="close-shop-btn">나가기</button>
+  </div>
+</section>
+
+<section id="battle-screen" class="screen overlay hidden">
+  <div class="panel battle-panel">
+    <div class="combatant" id="enemy-info">
+      <div class="sprite" id="enemy-sprite"></div>
+      <div class="name" id="enemy-name"></div>
+      <div class="hp-bar-outer"><div class="hp-bar-inner" id="enemy-hp-bar"></div></div>
+    </div>
+    <div class="combatant" id="player-info">
+      <div class="sprite">🧑</div>
+      <div class="name">나</div>
+      <div class="hp-bar-outer"><div class="hp-bar-inner" id="player-hp-bar"></div></div>
+    </div>
+    <div id="battle-log"></div>
+    <div id="battle-commands">
+      <button id="cmd-attack">공격</button>
+      <button id="cmd-capture">포획</button>
+      <button id="cmd-item">물약</button>
+      <button id="cmd-flee">도망</button>
+    </div>
+  </div>
+</section>
+
+<section id="fishing-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>낚시</h2>
+    <p>움직이는 찌가 초록 구간에 있을 때 "당기기!"를 눌러보세요.</p>
+    <div id="fishing-bar" class="fishing-bar">
+      <div id="fishing-zone" class="fishing-zone"></div>
+      <div id="fishing-marker" class="fishing-marker"></div>
+    </div>
+    <p>남은 미끼: <span id="fishing-bait"></span></p>
+    <p id="fishing-msg"></p>
+    <button id="fishing-reel-btn">당기기!</button>
+    <button id="close-fishing-btn">그만하기</button>
+  </div>
+</section>
+
+<section id="inventory-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>인벤토리</h2>
+    <div id="inventory-list"></div>
+    <button id="close-inventory-btn">닫기</button>
+  </div>
+</section>
+
+<section id="dex-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>도감</h2>
+    <div id="dex-list"></div>
+    <button id="close-dex-btn">닫기</button>
+  </div>
+</section>
+
+<section id="clear-screen" class="screen overlay hidden">
+  <div class="panel">
+    <h2>도감 완성!</h2>
+    <p>모든 생태계교란종을 도감에 등록했습니다.</p>
+    <button id="restart-btn">처음부터 다시하기</button>
+  </div>
+</section>
+
+<script src="game.js"></script>
+</body>
+</html>

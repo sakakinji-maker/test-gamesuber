@@ -40,6 +40,107 @@ const UPGRADE_DEFS = [
   { id: 'bomb', name: '폭탄', icon: '💣', desc: '1.5초마다 발밑에 폭탄을 떨어뜨려 범위 피해', weaponType: 'bomb' },
 ];
 
+// ---------- 사운드 ----------
+// 오디오 파일 없이 Web Audio API로 직접 소리를 합성해서 효과음/배경음을 만든다.
+let audioCtx = null;
+let muted = false;
+let bgm = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freqStart, freqEnd, duration, type, volume) {
+  if (muted) return;
+  const ac = getAudioCtx();
+  const osc = ac.createOscillator();
+  const gain = ac.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freqStart, ac.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(freqEnd, 1), ac.currentTime + duration);
+  gain.gain.setValueAtTime(volume, ac.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+  osc.connect(gain).connect(ac.destination);
+  osc.start();
+  osc.stop(ac.currentTime + duration);
+}
+
+function playNoise(duration, volume, filterFreq) {
+  if (muted) return;
+  const ac = getAudioCtx();
+  const size = Math.floor(ac.sampleRate * duration);
+  const buffer = ac.createBuffer(1, size, ac.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < size; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ac.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ac.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = filterFreq;
+  const gain = ac.createGain();
+  gain.gain.setValueAtTime(volume, ac.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+  noise.connect(filter).connect(gain).connect(ac.destination);
+  noise.start();
+  noise.stop(ac.currentTime + duration);
+}
+
+const sfx = {
+  shoot: () => playTone(650, 200, 0.07, 'square', 0.05),
+  hit: () => playNoise(0.05, 0.1, 900),
+  kill: () => playTone(320, 70, 0.15, 'sawtooth', 0.09),
+  hurt: () => playTone(180, 50, 0.2, 'sawtooth', 0.14),
+  bomb: () => { playNoise(0.3, 0.22, 300); playTone(120, 30, 0.3, 'sawtooth', 0.14); },
+  levelup: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => playTone(f, f, 0.15, 'triangle', 0.1), i * 80)),
+  win: () => [523, 659, 784, 1046, 1318].forEach((f, i) => setTimeout(() => playTone(f, f, 0.2, 'triangle', 0.12), i * 110)),
+  gameover: () => [400, 300, 200, 100].forEach((f, i) => setTimeout(() => playTone(f, f * 0.7, 0.3, 'sawtooth', 0.1), i * 150)),
+};
+
+// 폐허가 된 세상 느낌의 낮게 웅웅거리는 배경음. 멜로디 없이 두 오실레이터 + 천천히
+// 움직이는 필터로 긴장감 있는 분위기만 만든다 (실제 곡을 작곡하는 건 아님).
+function startBGM() {
+  if (bgm || muted) return;
+  const ac = getAudioCtx();
+  const osc1 = ac.createOscillator();
+  osc1.type = 'sawtooth';
+  osc1.frequency.value = 55;
+  const osc2 = ac.createOscillator();
+  osc2.type = 'sine';
+  osc2.frequency.value = 55 * 1.5;
+  const filter = ac.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 300;
+  const lfo = ac.createOscillator();
+  lfo.frequency.value = 0.15;
+  const lfoGain = ac.createGain();
+  lfoGain.gain.value = 150;
+  const gain = ac.createGain();
+  gain.gain.value = 0.05;
+  lfo.connect(lfoGain).connect(filter.frequency);
+  osc1.connect(filter);
+  osc2.connect(filter);
+  filter.connect(gain).connect(ac.destination);
+  osc1.start(); osc2.start(); lfo.start();
+  bgm = { osc1, osc2, lfo, gain };
+}
+
+function stopBGM() {
+  if (!bgm) return;
+  const ac = getAudioCtx();
+  bgm.gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
+  const nodes = bgm;
+  setTimeout(() => { nodes.osc1.stop(); nodes.osc2.stop(); nodes.lfo.stop(); }, 350);
+  bgm = null;
+}
+
+document.getElementById('mute-btn').addEventListener('click', (e) => {
+  muted = !muted;
+  e.target.textContent = muted ? '🔇' : '🔊';
+  if (muted) stopBGM(); else startBGM();
+});
+
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -48,7 +149,7 @@ window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; })
 window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 
 let player, weapons, enemies, projectiles, xpOrbs, camera, bombs;
-let elapsed, killCount, spawnTimer, pendingLevelUps, droneAngle;
+let elapsed, killCount, spawnTimer, pendingLevelUps, droneAngle, hurtSoundCooldown;
 let gameState = 'title'; // 'title' | 'playing' | 'levelup' | 'gameover' | 'win'
 let lastTime = 0;
 
@@ -74,14 +175,28 @@ function resetGame() {
   spawnTimer = 0.5;
   pendingLevelUps = 0;
   droneAngle = 0;
+  hurtSoundCooldown = 0;
+  combatLog = [];
+  document.getElementById('combat-log').innerHTML = '';
 }
 
 // 적을 처치했을 때 공통 처리 (투사체/드론/폭탄 모두 여기로 모음)
-function killEnemy(index) {
+function killEnemy(index, cause) {
   const e = enemies[index];
   xpOrbs.push({ x: e.x, y: e.y, value: e.elite ? 8 : 3, radius: 6 });
   enemies.splice(index, 1);
   killCount += 1;
+  sfx.kill();
+  if (cause === 'drone') addCombatLog(`🛸 드론 처치 성공! (${e.elite ? '엘리트' : '일반'} 몬스터)`, 'drone-kill');
+}
+
+// ---------- 전투 로그 ----------
+let combatLog = [];
+function addCombatLog(msg, cls) {
+  combatLog.unshift({ msg, cls, t: elapsed });
+  if (combatLog.length > 40) combatLog.length = 40;
+  const el = document.getElementById('combat-log');
+  el.innerHTML = combatLog.map((entry) => `<div class="${entry.cls || ''}">[${formatTime(entry.t)}] ${entry.msg}</div>`).join('');
 }
 
 function loadScores() {
@@ -183,6 +298,7 @@ function tryFireWeapon(weapon, dt) {
     });
   }
   weapon.cooldown = effFireRate;
+  sfx.shoot();
 }
 
 // 캐릭터 주위를 도는 드론. 무기 목록에 있으면 레벨만큼 대수가 늘어나고, 계속 회전하면서
@@ -197,7 +313,14 @@ function updateDrones(dt) {
   const def = WEAPON_DEFS.drone;
   const count = weapon.level;
   droneAngle += def.angularSpeed * dt;
-  const dps = def.baseDamage * (1 + 0.3 * (weapon.level - 1)) * player.globalDamageMult;
+  // 드론은 "초당 데미지"로 계속 때리는 방식이라 따로 발사 주기가 없다. 그래서 "공격속도
+  // 증가" 카드는 드론에서는 초당 데미지 자체를 올려주는 걸로 적용한다 (그래야 이 카드가
+  // 드론에도 실제로 효과가 있다).
+  const dps = def.baseDamage * (1 + 0.3 * (weapon.level - 1)) * player.globalDamageMult * player.globalRateMult;
+
+  // 이번 프레임에 실제로 닿은 적들을 모아뒀다가, "새로 닿기 시작한 순간"에만
+  // 로그를 남긴다 (매 프레임 로그를 남기면 1초에 60줄씩 쌓여서 못 읽으므로).
+  const touchedNow = new Set();
 
   for (let i = 0; i < count; i++) {
     const angle = droneAngle + (Math.PI * 2 / count) * i;
@@ -208,10 +331,19 @@ function updateDrones(dt) {
     for (let ei = enemies.length - 1; ei >= 0; ei--) {
       const e = enemies[ei];
       if (Math.hypot(wrapDelta(dx - e.x), wrapDelta(dy - e.y)) < 16 + e.radius) {
+        touchedNow.add(e);
+        if (!e._droneTouching) {
+          e._droneTouching = true;
+          addCombatLog(`🛸 드론 명중! (${e.elite ? '엘리트' : '일반'} 몬스터, 남은 체력 ${Math.max(0, Math.round(e.hp))})`, 'drone-hit');
+        }
         e.hp -= dps * dt;
-        if (e.hp <= 0) killEnemy(ei);
+        if (e.hp <= 0) killEnemy(ei, 'drone');
       }
     }
+  }
+
+  for (const e of enemies) {
+    if (!touchedNow.has(e)) e._droneTouching = false;
   }
 }
 
@@ -235,6 +367,7 @@ function updateBombs(dt) {
       b.timer -= dt;
       if (b.timer <= 0) {
         b.phase = 'boom';
+        sfx.bomb();
         for (let ei = enemies.length - 1; ei >= 0; ei--) {
           const e = enemies[ei];
           if (Math.hypot(wrapDelta(b.x - e.x), wrapDelta(b.y - e.y)) < b.radius + e.radius) {
@@ -263,6 +396,7 @@ function applyUpgrade(def) {
 }
 
 function showLevelUpCards() {
+  sfx.levelup();
   const shuffled = [...UPGRADE_DEFS].sort(() => Math.random() - 0.5).slice(0, 3);
   const container = document.getElementById('upgrade-cards');
   container.innerHTML = shuffled.map((def, i) => {
@@ -296,6 +430,7 @@ function resumeFromLevelUp() {
 
 function update(dt) {
   elapsed += dt;
+  hurtSoundCooldown -= dt;
 
   const { dx, dy } = getMoveVector();
   player.x = wrapCoord(player.x + dx * player.speed * dt);
@@ -315,7 +450,10 @@ function update(dt) {
     e.x = wrapCoord(e.x + (ex / dist) * e.speed * dt);
     e.y = wrapCoord(e.y + (ey / dist) * e.speed * dt);
 
-    if (dist < player.radius + e.radius) player.hp -= e.damage * dt;
+    if (dist < player.radius + e.radius) {
+      player.hp -= e.damage * dt;
+      if (hurtSoundCooldown <= 0) { sfx.hurt(); hurtSoundCooldown = 0.4; }
+    }
   }
 
   for (const w of weapons) {
@@ -336,7 +474,7 @@ function update(dt) {
       if (Math.hypot(wrapDelta(p.x - e.x), wrapDelta(p.y - e.y)) < p.radius + e.radius) {
         e.hp -= p.damage;
         projectiles.splice(pi, 1);
-        if (e.hp <= 0) killEnemy(ei);
+        if (e.hp <= 0) killEnemy(ei); else sfx.hit();
         break;
       }
     }
@@ -462,6 +600,8 @@ function showBestOnTitle() {
 
 function endGame(won) {
   gameState = won ? 'win' : 'gameover';
+  stopBGM();
+  if (won) sfx.win(); else sfx.gameover();
   const scoreNow = Math.floor(elapsed) + killCount;
   const record = { score: scoreNow, time: Math.floor(elapsed), kills: killCount, date: Date.now() };
   const { rank, total, top, entry } = recordScore(record);
@@ -489,6 +629,7 @@ document.getElementById('start-btn').addEventListener('click', () => {
   document.getElementById('game-screen').classList.remove('hidden');
   gameState = 'playing';
   lastTime = performance.now();
+  startBGM();
 });
 
 document.getElementById('retry-btn').addEventListener('click', () => {
@@ -498,6 +639,7 @@ document.getElementById('retry-btn').addEventListener('click', () => {
   gameState = 'playing';
   lastTime = performance.now();
   showBestOnTitle();
+  startBGM();
 });
 
 // ---------- 메인 루프 ----------

@@ -13,6 +13,13 @@ const GAMES = [
     description: '핵전쟁 이후 디스토피아에서 몰려오는 몬스터 속에 최대한 오래 살아남는 게임.',
     path: '/survival/',
   },
+  {
+    id: 'ecodex',
+    title: '대한민국 생태계교란종 잡기',
+    genre: '턴제 RPG',
+    description: '필드를 돌아다니며 생태계교란종을 약화시켜 포획(채집)하고 도감을 완성하는 게임.',
+    path: '/ecodex/',
+  },
 ];
 
 function renderGames(list) {
