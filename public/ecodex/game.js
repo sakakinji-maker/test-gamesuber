@@ -247,6 +247,7 @@ function drawEmoji(ch, x, y, size) {
 }
 
 function renderField() {
+  if (renderArtField()) { updateFieldHud(); return; }
   const rows = currentMap().rows;
   const mapH = rows.length, mapW = rows[0].length;
   for (let y = 0; y < mapH; y++) {
@@ -537,7 +538,7 @@ function startBattle(speciesId) {
 }
 
 function renderBattle() {
-  document.getElementById('enemy-sprite').textContent = battle.species.icon;
+  setSpeciesArt(document.getElementById('enemy-sprite'), battle.species);
   document.getElementById('enemy-name').textContent = `${battle.species.name} (${battle.species.type === 'plant' ? '식물' : '동물'})`;
   document.getElementById('enemy-hp-bar').style.width = `${Math.max(0, (battle.hp / battle.maxHp) * 100)}%`;
   document.getElementById('player-hp-bar').style.width = `${Math.max(0, (player.hp / player.maxHp) * 100)}%`;
