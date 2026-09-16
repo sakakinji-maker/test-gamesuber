@@ -17,7 +17,7 @@ if(state.phase==='ending'){$('progress').textContent='BAD END / 너무 늦게 �
 const c=CHAPTERS[state.chapter];$('progress').textContent='CHAPTER '+(state.chapter+1)+' / '+CHAPTERS.length+' · 단서 '+state.seen.length+'/3';heading(c.title);paragraph(c.intro);quote(c.quote);
 c.clues.forEach((clue,i)=>button((state.seen.includes(i)?'✓ ':'○ ')+clue[0],()=>readClue(i)));
 if(state.solved){paragraph(c.solution);button(state.chapter===CHAPTERS.length-1?'연락을 보낸다':'다음 장을 읽는다',()=>{if(state.chapter===CHAPTERS.length-1)state.phase='letter';else{state.chapter++;state.seen=[];state.solved=false;}render();$('story').focus();},true);}else{button('단서를 연결해 추리하기',deduce,true).disabled=state.seen.length<3;}}
-function readClue(i){if(!state.seen.includes(i))state.seen.push(i);save();notebook();clear();const c=CHAPTERS[state.chapter].clues[i];heading(c[0]);paragraph(c[1]);button('책으로 돌아가기',render,true);$('story').focus();}
+function readClue(i){if(!state.seen.includes(i))state.seen.push(i);render();clear();const c=CHAPTERS[state.chapter].clues[i];heading(c[0]);paragraph(c[1]);button('책으로 돌아가기',render,true);$('story').focus();}
 function deduce(){clear();const c=CHAPTERS[state.chapter];heading('단서 연결');paragraph(c.question);c.options.forEach((s,i)=>button(s,()=>{if(i===c.answer){state.solved=true;render();$('story').focus();}else $('feedback').textContent='이 결론은 단서와 맞지 않습니다. '+c.hint;}));button('책과 단서 다시 보기',render);}
 $('restart').onclick=()=>{if(confirm('저장된 진행을 지우고 처음부터 시작할까요?')){state=fresh();render();}};
 render();
