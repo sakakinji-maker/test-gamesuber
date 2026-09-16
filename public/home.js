@@ -1,4 +1,6 @@
 const GAMES = [
+  { id: 'unfinished', title: '아직 끝나지 않은 문장', genre: '미스터리 스토리',
+    description: '책 한 권에서 시작되는 다섯 사람의 기억. 단서를 비교해 조용한 진실을 알아내는 단편 추리 게임.', path: '/unfinished/' },
   {
     id: 'onecard',
     title: '원카드',
