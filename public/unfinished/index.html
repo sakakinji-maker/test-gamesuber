@@ -1,3 +1,37 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>아직 끝나지 않은 문장</title><link rel="stylesheet" href="style.css"></head>
-<body><header><a href="/">← 게임 서재</a><span>SHORT MYSTERY / 01</span><button id="restart">처음부터</button></header><main><section class="cover"><small>기억 속에는, 접힌 페이지가 있다.</small><h1>아직 끝나지 않은<br><em>문장</em></h1><p>졸업한 지 여덟 해.<br>책장 아래에서 우리의 마지막 여름을 발견했다.</p><div class="book" aria-hidden="true">여름의 여백<small>문예부 공동 작품집</small></div><p class="muted">독립 창작 단편 · 약 10–15분<br>관계의 단절과 후회를 다룹니다.<br>소리 없이 플레이할 수 있습니다.</p></section><section class="reading"><div id="progress"></div><article id="story" tabindex="-1"></article><div id="actions"></div><p id="feedback" role="status"></p><details id="notebook"><summary>수첩 — 발견한 단서</summary><div id="notes"></div></details><p id="save-status" class="muted"></p></section></main><script src="story.js"></script><script src="game.js"></script></body></html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="졸업 8년 뒤, 작품집에서 발견한 한 장의 쪽지. 대화와 회상으로 따라가는 독립 창작 미스터리.">
+<title>10년 뒤에 나를 찾아줘</title>
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<header><a href="/">← 게임 서재</a><span class="brand">여름의 여백 / STORY EDITION</span><button id="restart">처음부터</button></header>
+<main>
+<section id="title-screen">
+  <div class="title-copy"><span class="eyebrow">기억은 그대로인데, 이야기는 달라졌다.</span><h1>10년 뒤에<br><em>나를 찾아줘.</em></h1><p>졸업한 지 여덟 해.<br>낡은 작품집에서 서명 없는 쪽지가 떨어졌다.</p><p class="intro-small">독립 창작 미스터리 · 15장 · 예상 30–45분<br>학교에서의 소문, 창작물 도용, 관계의 단절을 다룹니다.</p><div id="title-actions"></div><p class="intro-small">정답 시험이 아닌 이야기입니다. 대화와 물건을 살펴보며 읽어 주세요.<br>선택은 짧은 반응을 바꾸지만, 하나의 결말로 이어집니다.</p></div>
+  <div class="cover-art" aria-hidden="true"><div class="book-cover"><small>문예부 공동 작품집</small><span>여름의 여백</span><i>졸업 기념판</i></div><div class="loose-note">10년 뒤에<br>나를 찾아줘.</div></div>
+</section>
+<section id="game-screen" hidden>
+  <div class="chapter-bar"><span id="chapter-number"></span><span id="page-count"></span></div>
+  <div id="stage" data-scene="room">
+    <div class="scenery" aria-hidden="true"><div class="window"></div><div class="shelf"></div><div class="desk"></div><div class="small-book"></div><div class="chair"></div></div>
+    <div class="scene-label"><span id="scene-time"></span><h2 id="scene-place"></h2></div>
+    <div id="chapter-title"></div>
+  </div>
+  <section class="reader">
+    <article id="story" tabindex="-1" aria-label="현재 이야기"></article>
+    <div id="interactions"></div>
+    <div id="inspection" tabindex="-1" hidden></div>
+    <p id="feedback" role="status" aria-live="polite"></p>
+    <nav class="page-nav" aria-label="이야기 진행"><button id="previous">← 이전</button><button id="next" class="primary">계속 읽기 →</button></nav>
+    <div id="ending-actions" hidden></div>
+  </section>
+  <div class="tools"><details id="notebook"><summary>기록 수첩</summary><div id="notes"></div></details><details><summary>읽은 장 다시 보기</summary><div id="chapters"></div></details><details><summary>등장인물</summary><p>나 · 부장 · 편집 담당 · 그림 담당 · 당시 지목된 부원</p><p>인물 이름은 아직 미정입니다. 역할명으로 표시합니다.</p></details></div>
+</section>
+<p id="save-status" role="status"></p>
+</main>
+<footer>10년 뒤에 나를 찾아줘 · 비주얼 노벨 첫 버전<br>배경은 그래픽 연출이며, 실제 인물이나 학교를 재현하지 않습니다.</footer>
+<script src="story.js?v=2"></script><script src="game.js?v=2"></script>
+</body></html>
