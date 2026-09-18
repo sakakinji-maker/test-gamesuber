@@ -84,6 +84,7 @@ function renderPage() {
   $('scene-place').textContent=chapter.place;
   $('scene-time').textContent=chapter.time;
   $('chapter-title').textContent=chapter.title;
+  updateVisuals(p,chapter);
   $('chapter-number').textContent='CHAPTER '+String(p.chapterIndex+1).padStart(2,'0')+' / 15';
   $('page-count').textContent=(p.localIndex+1)+' / '+chapter.pages.length;
   $('story').replaceChildren();$('interactions').replaceChildren();$('inspection').hidden=true;
@@ -92,7 +93,7 @@ function renderPage() {
     const paper=element('div',undefined,'paper');
     paper.append(element('h3',p.title),element('p',p.text));$('story').append(paper);
   } else {
-    if(p.kind==='dialogue') $('story').append(element('div',p.speaker,'speaker'+(p.speaker==='나'?' self':'')));
+    if(p.kind==='dialogue') $('story').append(element('div',p.speaker,'speaker'+(p.speaker==='윤서진'?' self':'')));
     $('story').append(element('p',p.text,p.kind==='dialogue'?'dialogue-text':'narration'));
   }
   if(p.kind==='explore') p.items.forEach((item,index)=>{
@@ -127,7 +128,7 @@ function showEnding() {
 function go(index) {
   if(!Number.isInteger(index)||index<0||index>=PAGES.length)return;
   state.cursor=index;state.furthest=Math.max(state.furthest,index);state.started=true;
-  persist();renderPage();$('story').focus();
+  persist();renderPage();$('story').focus({preventScroll:true});$('stage').scrollIntoView({block:'start'});
 }
 function next() {
   if(!ready())return;
@@ -149,4 +150,4 @@ function showTitle() {
 $('next').onclick=next;
 $('previous').onclick=()=>go(state.cursor-1);
 $('restart').onclick=restart;
-showTitle();persist();
+renderCastList();showTitle();persist();

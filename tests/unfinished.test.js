@@ -4,10 +4,10 @@ function boot(saved,blocked=false,allowConfirm=true){
  const nodes=new Map();
  function el(tag='div'){return {tag,children:[],textContent:'',className:'',hidden:false,disabled:false,dataset:{},attrs:{},
  append(...items){this.children.push(...items)},replaceChildren(...items){this.children=items},
- get childElementCount(){return this.children.length},setAttribute(k,v){this.attrs[k]=v},focus(){},scrollIntoView(){}};}
+ get childElementCount(){return this.children.length},setAttribute(k,v){this.attrs[k]=v},getAttribute(k){return this.attrs[k]??null;},focus(){},scrollIntoView(){}};}
  const storage={value:saved,getItem(key){if(blocked)throw Error('blocked');assert.equal(key,'unfinished_story_v2');return this.value;},setItem(key,value){if(blocked)throw Error('blocked');assert.equal(key,'unfinished_story_v2');this.value=value;}};
  const ctx={document:{getElementById(id){if(!nodes.has(id))nodes.set(id,el());return nodes.get(id);},createElement:el},localStorage:storage,confirm:()=>allowConfirm};
- vm.createContext(ctx);for(const file of ['story.js','game.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),ctx);
+ vm.createContext(ctx);for(const file of ['story.js','visuals.js','game.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),ctx);
  return {nodes,storage,run:s=>vm.runInContext(s,ctx)};
 }
 for(let variant=0;variant<2;variant++){
@@ -50,4 +50,18 @@ const story=require(path.join(root,'story.js'));const all=JSON.stringify(story);
 assert.ok(all.includes('프린터'));assert.ok(all.includes('출력했다. 내 작품집에 끼워'));
 assert.ok(all.includes('목차의 이유'));assert.ok(all.includes('오늘 날짜를 적고'));
 assert.ok(!all.includes('정답에 벌점'));
-console.log('PASS: 15 chapters / 174 pages, both choices, all inspections, notebook, navigation, restore every page, ending, reset, corrupt and blocked storage.');
+const art=boot(null);
+assert.equal(art.nodes.get('cast-list').childElementCount,5);
+art.run("go(PAGES.findIndex(p=>p.speaker==='윤서진'))");
+assert.equal(art.nodes.get('active-character').hidden,false);
+assert.equal(art.nodes.get('active-character').children[1].textContent,'윤서진');
+art.run("go(PAGES.findIndex(p=>p.speaker==='정은재'))");
+assert.equal(art.nodes.get('active-character').children[1].textContent,'정은재');
+art.run("go(PAGES.findIndex(p=>p.speaker?.startsWith('과거 · ')))");
+assert.equal(art.nodes.get('active-character').hidden,true);
+assert.equal(art.nodes.get('scene-time').textContent,'회상 · 고등학교 문예부');
+for(const name of ['room','cafe','school','archive'])assert.ok(fs.statSync(path.join(root,'assets',name+'-v1.png')).size>1000);
+assert.ok(fs.statSync(path.join(root,'assets/cast-atlas-v1.png')).size>1000);
+const named=art.run('JSON.stringify(STORY)');
+assert.ok(!/태오은|태오을|은재은|은재을/.test(named));
+console.log('PASS: full story, saves, all 5 portraits, memory display, named text and 4 background assets.');

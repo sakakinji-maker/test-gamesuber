@@ -5,6 +5,7 @@
 <meta name="description" content="졸업 8년 뒤, 작품집에서 발견한 한 장의 쪽지. 대화와 회상으로 따라가는 독립 창작 미스터리.">
 <title>10년 뒤에 나를 찾아줘</title>
 <link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="visuals.css?v=1">
 </head>
 <body>
 <header><a href="/">← 게임 서재</a><span class="brand">여름의 여백 / STORY EDITION</span><button id="restart">처음부터</button></header>
@@ -16,6 +17,8 @@
 <section id="game-screen" hidden>
   <div class="chapter-bar"><span id="chapter-number"></span><span id="page-count"></span></div>
   <div id="stage" data-scene="room">
+    <img id="scene-image" alt="" decoding="async">
+    <aside id="active-character" aria-label="현재 대화 상대" hidden></aside>
     <div class="scenery" aria-hidden="true"><div class="window"></div><div class="shelf"></div><div class="desk"></div><div class="small-book"></div><div class="chair"></div></div>
     <div class="scene-label"><span id="scene-time"></span><h2 id="scene-place"></h2></div>
     <div id="chapter-title"></div>
@@ -28,10 +31,10 @@
     <nav class="page-nav" aria-label="이야기 진행"><button id="previous">← 이전</button><button id="next" class="primary">계속 읽기 →</button></nav>
     <div id="ending-actions" hidden></div>
   </section>
-  <div class="tools"><details id="notebook"><summary>기록 수첩</summary><div id="notes"></div></details><details><summary>읽은 장 다시 보기</summary><div id="chapters"></div></details><details><summary>등장인물</summary><p>나 · 부장 · 편집 담당 · 그림 담당 · 당시 지목된 부원</p><p>인물 이름은 아직 미정입니다. 역할명으로 표시합니다.</p></details></div>
+  <div class="tools"><details id="notebook"><summary>기록 수첩</summary><div id="notes"></div></details><details><summary>읽은 장 다시 보기</summary><div id="chapters"></div></details><details><summary>등장인물 — 다섯 사람</summary><div id="cast-list"></div><p class="intro-small">초상화는 졸업 8년 후, 현재의 모습입니다.</p></details></div>
 </section>
 <p id="save-status" role="status"></p>
 </main>
 <footer>10년 뒤에 나를 찾아줘 · 비주얼 노벨 첫 버전<br>배경은 그래픽 연출이며, 실제 인물이나 학교를 재현하지 않습니다.</footer>
-<script src="story.js?v=2"></script><script src="game.js?v=2"></script>
+<script src="story.js?v=2"></script><script src="visuals.js?v=1"></script><script src="game.js?v=3"></script>
 </body></html>
