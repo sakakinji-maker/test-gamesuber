@@ -1,123 +1,85 @@
 const GAMES = [
-  { id: 'unfinished', title: '10년 뒤에 나를 찾아줘', genre: '미스터리 스토리',
-    description: '졸업 8년 후 발견한 쪽지. 옛 친구들과의 대화, 학교 탐색과 회상으로 이어지는 15장 스토리 게임.', path: '/unfinished/' },
   {
-    id: 'onecard',
-    title: '원카드',
-    genre: '카드 게임',
-    description: '2~4인 온라인 멀티플레이 카드 게임. 사람이 부족하면 AI가 채워줘요.',
-    path: '/onecard/',
+    id: 'unfinished', category: 'story', title: '10년 뒤에 나를 찾아줘', genre: 'MYSTERY · STORY',
+    description: '졸업 후 발견한 한 장의 쪽지. 옛 친구와 학교의 기억을 따라가는 15챕터 미스터리 스토리.',
+    path: '/unfinished/', symbol: '✎', accent: '#ff786e', label: 'NARRATIVE GAME', status: 'Playable · 15 Chapters',
+    tech: ['JAVASCRIPT', 'STORY DESIGN', '2D ART'],
   },
   {
-    id: 'survival',
-    title: '핵전쟁 서바이벌',
-    genre: '액션 서바이벌',
-    description: '핵전쟁 이후 디스토피아에서 몰려오는 몬스터 속에 최대한 오래 살아남는 게임.',
-    path: '/survival/',
+    id: 'onecard', category: 'multiplayer', title: '원카드', genre: 'CARD · MULTIPLAYER',
+    description: '친구 또는 AI와 즐기는 2~4인 온라인 카드 게임. 실시간 방 생성과 턴 기반 플레이를 구현했습니다.',
+    path: '/onecard/', symbol: '♠', accent: '#c7ff4a', label: 'ONLINE GAME', status: 'Playable · 2–4 Players',
+    tech: ['SOCKET.IO', 'NODE.JS', 'GAME RULES'],
   },
   {
-    id: 'ecodex',
-    title: '대한민국 생태계교란종 잡기',
-    genre: '턴제 RPG',
-    description: '필드를 돌아다니며 생태계교란종을 약화시켜 포획(채집)하고 도감을 완성하는 게임.',
-    path: '/ecodex/',
+    id: 'survival', category: 'action', title: '핵전쟁 서바이벌', genre: 'ACTION · SURVIVAL',
+    description: '핵전쟁 이후의 폐허에서 몰려오는 적을 피하고 처치하며 생존 시간을 갱신하는 액션 게임.',
+    path: '/survival/', symbol: '☢', accent: '#ffb020', label: 'SURVIVAL GAME', status: 'Playable · Single Player',
+    tech: ['CANVAS', 'JAVASCRIPT', 'COMBAT'],
+  },
+  {
+    id: 'ecodex', category: 'rpg', title: '대한민국 생태계교란종 잡기', genre: 'COLLECTION · RPG',
+    description: '필드를 탐사하고 생태계교란종을 약화해 포획하며 생물 도감을 완성하는 교육형 턴제 RPG.',
+    path: '/ecodex/', symbol: '⌁', accent: '#56d6b1', label: 'ECO ADVENTURE', status: 'Playable · Turn Based',
+    tech: ['RPG SYSTEM', 'COLLECTION', 'PIXEL ART'],
   },
 ];
 
-function renderGames(list) {
-  const el = document.getElementById('game-list');
-  if (list.length === 0) {
-    el.innerHTML = '<div class="no-result">검색 결과가 없습니다.</div>';
+const gameList = document.getElementById('game-list');
+const searchInput = document.getElementById('game-search');
+const filterButtons = [...document.querySelectorAll('.filter-button')];
+let activeFilter = 'all';
+
+function renderGames() {
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = GAMES.filter((game) => {
+    const matchesFilter = activeFilter === 'all' || game.category === activeFilter;
+    const searchable = `${game.title} ${game.genre} ${game.description}`.toLowerCase();
+    return matchesFilter && searchable.includes(query);
+  });
+
+  if (!filtered.length) {
+    gameList.innerHTML = '<div class="no-result">조건에 맞는 프로젝트가 없습니다.<br>다른 검색어나 장르를 선택해 주세요.</div>';
     return;
   }
-  el.innerHTML = list.map(g => `
-    <div class="game-card" data-path="${g.path}">
-      <h2>${g.title}</h2>
-      <p>${g.description}</p>
-      <span class="genre">${g.genre}</span>
-    </div>
-  `).join('');
 
-  document.querySelectorAll('.game-card').forEach(card => {
-    card.addEventListener('click', () => { location.href = card.dataset.path; });
-  });
+  gameList.innerHTML = filtered.map((game) => {
+    const number = String(GAMES.indexOf(game) + 1).padStart(2, '0');
+    return `
+      <a class="game-card" href="${game.path}" style="--accent:${game.accent}" aria-label="${game.title} 플레이하기">
+        <div class="card-art" data-index="PROJECT ${number}">
+          <span class="card-art-symbol" aria-hidden="true">${game.symbol}</span>
+          <span class="art-label">${game.label}</span>
+        </div>
+        <div class="card-content">
+          <div class="card-topline">
+            <span class="card-genre">${game.genre}</span>
+            <span class="card-status">${game.status}</span>
+          </div>
+          <div class="card-title-row">
+            <h3>${game.title}</h3>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </div>
+          <p class="card-description">${game.description}</p>
+          <ul class="tech-list" aria-label="사용 기술">
+            ${game.tech.map((item) => `<li>#${item}</li>`).join('')}
+          </ul>
+        </div>
+      </a>`;
+  }).join('');
 }
 
-document.getElementById('game-search').addEventListener('input', (e) => {
-  const q = e.target.value.trim().toLowerCase();
-  const filtered = GAMES.filter(g =>
-    g.title.toLowerCase().includes(q) || g.genre.toLowerCase().includes(q)
-  );
-  renderGames(filtered);
+filterButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    activeFilter = button.dataset.filter;
+    filterButtons.forEach((item) => {
+      const selected = item === button;
+      item.classList.toggle('active', selected);
+      item.setAttribute('aria-pressed', String(selected));
+    });
+    renderGames();
+  });
 });
 
-renderGames(GAMES);
-
-// ---------- 오늘의 날짜(달력) / 날씨(그림) ----------
-
-function renderCalendar(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth(); // 0-based
-  const today = date.getDate();
-  const firstDow = new Date(year, month, 1).getDay(); // 0=일요일
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  let html = `<div class="cal-header">${year}년 ${month + 1}월</div><div class="cal-grid">`;
-  ['일', '월', '화', '수', '목', '금', '토'].forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
-  for (let i = 0; i < firstDow; i++) html += '<div class="cal-cell empty"></div>';
-  for (let d = 1; d <= daysInMonth; d++) {
-    html += `<div class="cal-cell ${d === today ? 'today' : ''}">${d}</div>`;
-  }
-  html += '</div>';
-  document.getElementById('calendar-card').innerHTML = html;
-}
-
-const WEATHER_INFO = {
-  0: { icon: '☀️', text: '맑음' }, 1: { icon: '🌤️', text: '대체로 맑음' },
-  2: { icon: '⛅', text: '구름 조금' }, 3: { icon: '☁️', text: '흐림' },
-  45: { icon: '🌫️', text: '안개' }, 48: { icon: '🌫️', text: '서리 안개' },
-  51: { icon: '🌦️', text: '약한 이슬비' }, 53: { icon: '🌦️', text: '이슬비' }, 55: { icon: '🌧️', text: '강한 이슬비' },
-  61: { icon: '🌧️', text: '약한 비' }, 63: { icon: '🌧️', text: '비' }, 65: { icon: '🌧️', text: '강한 비' },
-  71: { icon: '🌨️', text: '약한 눈' }, 73: { icon: '🌨️', text: '눈' }, 75: { icon: '❄️', text: '많은 눈' }, 77: { icon: '❄️', text: '진눈깨비' },
-  80: { icon: '🌦️', text: '약한 소나기' }, 81: { icon: '🌧️', text: '소나기' }, 82: { icon: '⛈️', text: '강한 소나기' },
-  95: { icon: '⛈️', text: '뇌우' }, 96: { icon: '⛈️', text: '우박 동반 뇌우' }, 99: { icon: '⛈️', text: '강한 우박 동반 뇌우' },
-};
-
-function describeWeather(code) {
-  return WEATHER_INFO[code] || { icon: '❓', text: '알 수 없음' };
-}
-
-function showWeather(lat, lon, label) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
-  fetch(url)
-    .then(r => r.json())
-    .then(data => {
-      const c = data.current;
-      const info = describeWeather(c.weather_code);
-      document.getElementById('weather-icon').textContent = info.icon;
-      document.getElementById('weather-text').innerHTML =
-        `${label}<br>${info.text} · ${Math.round(c.temperature_2m)}°C`;
-    })
-    .catch(() => {
-      document.getElementById('weather-icon').textContent = '❓';
-      document.getElementById('weather-text').textContent = '날씨 정보를 가져올 수 없습니다.';
-    });
-}
-
-function loadDateAndWeather() {
-  const now = new Date();
-  renderCalendar(now);
-
-  const SEOUL = { lat: 37.5665, lon: 126.9780 };
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => showWeather(pos.coords.latitude, pos.coords.longitude, '현재 위치'),
-      () => showWeather(SEOUL.lat, SEOUL.lon, '서울'),
-      { timeout: 5000 }
-    );
-  } else {
-    showWeather(SEOUL.lat, SEOUL.lon, '서울');
-  }
-}
-
-loadDateAndWeather();
+searchInput.addEventListener('input', renderGames);
+renderGames();
