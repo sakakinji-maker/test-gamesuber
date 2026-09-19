@@ -2,13 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>원카드</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <section id="nickname-screen" class="screen">
-  <h1>원카드</h1>
+  <img class="game-logo" src="assets/onecard-logo.svg" alt="원카드">
   <p>닉네임을 입력하고 입장하세요.</p>
   <input type="text" id="nickname-input" maxlength="10" placeholder="닉네임 (예: 여죽)">
   <button id="enter-btn">입장하기</button>
@@ -16,7 +17,7 @@
 </section>
 
 <section id="lobby-entry-screen" class="screen hidden">
-  <h1>원카드</h1>
+  <img class="game-logo" src="assets/onecard-logo.svg" alt="원카드">
   <p id="welcome-text"></p>
   <button id="create-room-btn">방 만들기</button>
   <div class="join-row">
@@ -29,7 +30,8 @@
 </section>
 
 <section id="lobby-room-screen" class="screen hidden">
-  <h1>대기실</h1>
+  <img class="game-logo game-logo-small" src="assets/onecard-logo.svg" alt="원카드">
+  <h1>게임 대기실</h1>
   <p>방 코드: <strong id="room-code-display"></strong> (친구에게 알려주세요)</p>
   <div id="lobby-seats"></div>
   <button id="start-game-btn" class="hidden">게임 시작</button>
