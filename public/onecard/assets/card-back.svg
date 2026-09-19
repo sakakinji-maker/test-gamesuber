@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 200">
+  <defs>
+    <pattern id="diamonds" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="20" height="20" fill="#173d78"/>
+      <path d="M0 0h10v10H0Zm10 10h10v10H10Z" fill="#285da5"/>
+      <path d="M10 0v20M0 10h20" stroke="#8eb7df" stroke-opacity=".25" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#6f9dcc" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#0b2957" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="140" height="200" rx="13" fill="#f4d887"/>
+  <rect x="5" y="5" width="130" height="190" rx="10" fill="#13346a" stroke="#fff3bc" stroke-width="3"/>
+  <rect x="11" y="11" width="118" height="178" rx="7" fill="url(#diamonds)" stroke="#d8bb68" stroke-width="2"/>
+  <rect x="18" y="18" width="104" height="164" rx="5" fill="url(#glow)" stroke="#fff0ae" stroke-opacity=".65"/>
+  <path d="M70 50 88 82l32 18-32 18-18 32-18-32-32-18 32-18Z" fill="#f4d77b" stroke="#fff1b2" stroke-width="2"/>
+  <circle cx="70" cy="100" r="25" fill="#12356a" stroke="#fff1b2" stroke-width="3"/>
+  <text x="70" y="111" text-anchor="middle" fill="#ffe690" font-family="Georgia,serif" font-size="34" font-weight="700">1</text>
+</svg>
