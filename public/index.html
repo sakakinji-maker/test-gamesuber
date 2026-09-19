@@ -1,27 +1,129 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>일단 만들어보는 바이브코딩 게임만들기</title>
-<link rel="stylesheet" href="home.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="게임 기획과 개발, QA 과정을 직접 경험하며 완성한 정회성의 게임 포트폴리오입니다.">
+  <meta name="theme-color" content="#0a0b10">
+  <title>정회성 | Game Portfolio</title>
+  <link rel="stylesheet" href="home.css">
 </head>
-<body>
+<body id="top">
+  <a class="skip-link" href="#projects">작품 목록으로 바로가기</a>
 
-<header class="hero">
-  <h1>일단 만들어보는 바이브코딩 게임만들기</h1>
-  <input type="text" id="game-search" placeholder="게임 이름으로 검색해보세요 (예: 원카드)">
-</header>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="홈으로 이동">
+      <span class="brand-mark">HS</span>
+      <span>GAME LAB</span>
+    </a>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a class="nav-github" href="https://github.com/sakakinji-maker/test-gamesuber" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </nav>
+  </header>
 
-<section class="info-bar">
-  <div class="info-card" id="calendar-card"></div>
-  <div class="info-card" id="weather-card">
-    <div class="weather-icon" id="weather-icon">⏳</div>
-    <div class="weather-text" id="weather-text">날씨 불러오는 중...</div>
-  </div>
-</section>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> GAME DESIGN · DEVELOPMENT · QA</p>
+        <h1 id="hero-title">아이디어를<br><em>플레이 경험</em>으로<br>만듭니다.</h1>
+        <p class="hero-description">
+          기획 의도를 실제 게임으로 구현하고, 직접 플레이하며 개선합니다.<br>
+          서로 다른 장르로 실험한 네 개의 웹 게임을 소개합니다.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#projects">프로젝트 보기 <span>↓</span></a>
+          <a class="button button-ghost" href="https://github.com/sakakinji-maker/test-gamesuber" target="_blank" rel="noreferrer">소스 코드 ↗</a>
+        </div>
+        <dl class="hero-stats" aria-label="포트폴리오 요약">
+          <div><dt>04</dt><dd>Playable Games</dd></div>
+          <div><dt>04</dt><dd>Different Genres</dd></div>
+          <div><dt>WEB</dt><dd>Instant Play</dd></div>
+        </dl>
+      </div>
 
-<section class="game-list" id="game-list"></section>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="hero-window">
+          <div class="window-bar"><i></i><i></i><i></i><span>now_playing.exe</span></div>
+          <div class="window-stage">
+            <span class="pixel-star star-one">✦</span>
+            <span class="pixel-star star-two">✦</span>
+            <div class="controller">
+              <span class="dpad">+</span>
+              <span class="controller-center"></span>
+              <span class="button-a">A</span>
+              <span class="button-b">B</span>
+            </div>
+            <p>PRESS START</p>
+          </div>
+        </div>
+        <div class="floating-tag tag-plan"># GAME DESIGN</div>
+        <div class="floating-tag tag-qa"># QA TEST</div>
+      </div>
+    </section>
 
-<script src="home.js"></script>
+    <section class="projects section" id="projects" aria-labelledby="projects-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-number">01 / SELECTED WORKS</p>
+          <h2 id="projects-title">직접 플레이해 보세요.</h2>
+        </div>
+        <p>기획에서 구현까지 진행한 웹 게임입니다.<br>카드를 선택하면 바로 실행됩니다.</p>
+      </div>
+
+      <div class="project-toolbar">
+        <div class="filters" role="group" aria-label="장르별 필터">
+          <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">전체</button>
+          <button class="filter-button" type="button" data-filter="story" aria-pressed="false">스토리</button>
+          <button class="filter-button" type="button" data-filter="multiplayer" aria-pressed="false">멀티플레이</button>
+          <button class="filter-button" type="button" data-filter="action" aria-pressed="false">액션</button>
+          <button class="filter-button" type="button" data-filter="rpg" aria-pressed="false">RPG</button>
+        </div>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">게임 검색</span>
+          <input type="search" id="game-search" placeholder="프로젝트 검색" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="game-list" id="game-list" aria-live="polite"></div>
+    </section>
+
+    <section class="about section" id="about" aria-labelledby="about-title">
+      <div class="about-intro">
+        <p class="section-number">02 / ABOUT</p>
+        <h2 id="about-title">재미의 이유를 설계하고,<br>문제의 원인을 기록합니다.</h2>
+        <p>
+          게임 기획을 중심으로 웹 구현과 QA를 함께 경험하고 있습니다.
+          규칙을 문서로 끝내지 않고 실제 플레이로 검증하며, 발견한 문제를 다음 개선으로 연결합니다.
+        </p>
+      </div>
+      <div class="capability-list">
+        <article>
+          <span>01</span>
+          <div><h3>Game Design</h3><p>핵심 재미, 규칙, 플레이 흐름을 구체적인 시스템으로 설계합니다.</p></div>
+        </article>
+        <article>
+          <span>02</span>
+          <div><h3>Prototyping</h3><p>아이디어를 빠르게 구현해 직접 조작할 수 있는 형태로 검증합니다.</p></div>
+        </article>
+        <article>
+          <span>03</span>
+          <div><h3>Quality Assurance</h3><p>테스트 케이스와 재현 절차를 통해 문제를 명확하게 기록합니다.</p></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><span class="brand-mark">HS</span><strong>정회성 · GAME PORTFOLIO</strong></div>
+    <p>Designed &amp; developed with curiosity.</p>
+    <a href="#top" aria-label="페이지 위로 이동">TOP ↑</a>
+  </footer>
+
+  <script src="home.js"></script>
 </body>
 </html>
