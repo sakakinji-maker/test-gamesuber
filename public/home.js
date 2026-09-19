@@ -23,6 +23,12 @@ const GAMES = [
     path: '/ecodex/', symbol: '⌁', accent: '#56d6b1', label: 'ECO ADVENTURE', status: 'Playable · Turn Based',
     tech: ['RPG SYSTEM', 'COLLECTION', 'PIXEL ART'],
   },
+  {
+    id: 'shogi', category: 'strategy', title: '한 수씩 배우는 쇼기', genre: 'BOARD · STRATEGY',
+    description: '왕초보부터 고급까지 이동, 승격, 수비와 외통을 직접 움직이며 배우는 12문제 쇼기 튜토리얼.',
+    path: '/shogi/', symbol: '王', accent: '#e8b45a', label: 'BOARD GAME', status: 'Tutorial · 12 Challenges',
+    tech: ['RULE DESIGN', 'TUTORIAL UX', 'JAVASCRIPT'],
+  },
 ];
 
 const gameList = document.getElementById('game-list');

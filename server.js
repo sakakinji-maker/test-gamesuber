@@ -65,6 +65,7 @@ function serveStatic(req, res) {
   else if (urlPath === '/onecard' || urlPath === '/onecard/') urlPath = '/onecard/index.html';
   else if (urlPath === '/survival' || urlPath === '/survival/') urlPath = '/survival/index.html';
   else if (urlPath === '/ecodex' || urlPath === '/ecodex/') urlPath = '/ecodex/index.html';
+  else if (urlPath === '/shogi' || urlPath === '/shogi/') urlPath = '/shogi/index.html';
 
   const filePath = path.join(PUBLIC_ROOT, decodeURIComponent(urlPath));
   if (!filePath.startsWith(PUBLIC_ROOT)) { res.writeHead(403); res.end(); return; }

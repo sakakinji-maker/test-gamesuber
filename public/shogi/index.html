@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="말을 직접 움직이며 쇼기의 기본 규칙을 배우는 단계별 입문 튜토리얼입니다.">
+  <meta name="theme-color" content="#17130e">
+  <title>한 수씩 배우는 쇼기 | GAME LAB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="/" aria-label="게임 포트폴리오로 돌아가기"><span>←</span> GAME LAB</a>
+    <div class="topbar-title">
+      <span class="title-mark" aria-hidden="true">王</span>
+      <div><strong>한 수씩 배우는 쇼기</strong><small>SHOGI TUTORIAL</small></div>
+    </div>
+    <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true" aria-label="효과음 끄기">SOUND ON</button>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">4 DIFFICULTIES · 12 CHALLENGES</p>
+        <h1 id="page-title">첫 한 수부터,<br><em>천천히.</em></h1>
+      </div>
+      <p>왕초보부터 고급까지, 설명만 읽는 대신 말을 직접 움직이며 배웁니다.<br>밝게 표시된 칸을 따라 12개의 쇼기 문제를 풀어 보세요.</p>
+    </section>
+
+    <section class="difficulty-select" aria-labelledby="difficulty-title">
+      <div class="difficulty-heading">
+        <div><p class="eyebrow">SELECT A CHALLENGE</p><h2 id="difficulty-title">난이도를 선택하세요.</h2></div>
+        <p>각 난이도는 세 문제로 구성됩니다.<br>완료한 문제에는 체크 표시가 남습니다.</p>
+      </div>
+      <div class="level-grid" id="level-grid"></div>
+    </section>
+
+    <section class="tutorial-shell" id="tutorial" aria-label="쇼기 튜토리얼">
+      <aside class="lesson-panel">
+        <div class="lesson-progress" aria-label="튜토리얼 진행률">
+          <div class="progress-copy"><span id="progress-label">준비</span><strong id="progress-count">0 / 12</strong></div>
+          <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+        </div>
+
+        <div class="lesson-copy">
+          <span class="lesson-kicker" id="lesson-kicker">WELCOME</span>
+          <h2 id="lesson-title">열두 개의 한 수가 기다리고 있습니다.</h2>
+          <p id="lesson-description">난이도를 고르고 말을 직접 움직이며 쇼기의 핵심 전술을 익혀 보세요.</p>
+        </div>
+
+        <div class="rule-card" id="rule-card">
+          <span class="rule-icon" id="rule-icon" aria-hidden="true">王</span>
+          <div><strong id="rule-title">난이도별 학습</strong><p id="rule-text">기본 이동부터 한 수 외통까지 열두 문제를 단계적으로 연습합니다.</p></div>
+        </div>
+
+        <div class="mission" id="mission" aria-live="polite">
+          <span>MISSION</span>
+          <p id="mission-text">준비가 되면 왕초보 첫 문제를 시작하세요.</p>
+        </div>
+
+        <div class="feedback" id="feedback" role="status" aria-live="polite">
+          <span id="feedback-icon">✦</span>
+          <p id="feedback-text">선택한 말의 이동 가능한 칸이 표시됩니다.</p>
+        </div>
+
+        <div class="lesson-actions">
+          <button class="button button-secondary" id="hint-button" type="button">힌트 보기</button>
+          <button class="button button-secondary" id="reset-button" type="button">이 단계 다시하기</button>
+          <button class="button button-primary" id="next-button" type="button">왕초보 시작 <span>→</span></button>
+        </div>
+      </aside>
+
+      <div class="board-panel">
+        <div class="turn-banner"><span></span><strong id="turn-label">선수 차례</strong><small>아래쪽에서 위쪽으로 전진합니다</small></div>
+
+        <div class="captured-area opponent-hand" aria-label="상대가 잡은 말">
+          <span>상대의 말받침</span><div id="opponent-hand"></div>
+        </div>
+
+        <div class="board-wrap">
+          <div class="file-labels" aria-hidden="true"><span>9</span><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+          <div class="shogi-board" id="shogi-board" role="grid" aria-label="9×9 쇼기판"></div>
+          <div class="rank-labels" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>七</span><span>八</span><span>九</span></div>
+        </div>
+
+        <div class="captured-area player-hand" aria-label="내가 잡은 말">
+          <span>나의 말받침</span><div id="player-hand"><small>잡은 말이 여기에 놓입니다.</small></div>
+        </div>
+
+        <div class="board-legend">
+          <span><i class="legend-dot legal"></i>이동 가능</span>
+          <span><i class="legend-dot target"></i>목표 칸</span>
+          <span><i class="legend-dot zone"></i>승격 지역</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="piece-guide" aria-labelledby="piece-guide-title">
+      <div><p class="eyebrow">QUICK REFERENCE</p><h2 id="piece-guide-title">오늘 만나는 말</h2></div>
+      <div class="piece-list">
+        <article><span class="mini-piece">歩</span><div><strong>보병</strong><small>앞으로 한 칸</small></div></article>
+        <article><span class="mini-piece">金</span><div><strong>금장</strong><small>여섯 방향 한 칸</small></div></article>
+        <article><span class="mini-piece">飛</span><div><strong>비차</strong><small>가로·세로로 이동</small></div></article>
+        <article><span class="mini-piece promoted">と</span><div><strong>토킨</strong><small>승격한 보병</small></div></article>
+        <article><span class="mini-piece">角</span><div><strong>각행</strong><small>대각선으로 이동</small></div></article>
+        <article><span class="mini-piece">桂</span><div><strong>계마</strong><small>앞으로 뛰어넘기</small></div></article>
+        <article><span class="mini-piece">香</span><div><strong>향차</strong><small>앞으로 직진</small></div></article>
+        <article><span class="mini-piece">銀</span><div><strong>은장</strong><small>다섯 방향 한 칸</small></div></article>
+        <article><span class="mini-piece">王</span><div><strong>왕장</strong><small>모든 방향 한 칸</small></div></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>HS · GAME LAB</span><p>규칙을 이해하고, 한 수의 이유를 생각합니다.</p><a href="#page-title">TOP ↑</a></footer>
+  <script src="game.js"></script>
+</body>
+</html>
