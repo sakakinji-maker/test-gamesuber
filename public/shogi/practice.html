@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="힌트와 무르기로 배우는 쇼기 컴퓨터 연습 대국. 네 가지 난이도에 도전하세요.">
+  <meta name="theme-color" content="#f4efe4">
+  <title>한 수씩, 실전으로 | 쇼기 연습 대국</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="practice.css">
+  <script src="engine.js" defer></script>
+  <script src="practice.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="/shogi/"><span>←</span> 튜토리얼</a>
+    <div class="topbar-title"><span class="title-mark" aria-hidden="true">王</span><div><strong>한 수씩 배우는 쇼기</strong><small>PRACTICE ROOM</small></div></div>
+    <a class="sound-toggle" href="/">GAME LAB ↗</a>
+  </header>
+  <main>
+    <section class="intro practice-intro">
+      <div><p class="eyebrow">LESSON TO PLAY · 컴퓨터 연습 대국</p><h1>이제는,<br><em>나의 한 수.</em></h1></div>
+      <p>틀려도 괜찮아요. 무르고, 힌트를 보고, 다시 두세요.<br>당신은 아래쪽 선공입니다. 첫 보병부터 움직여 볼까요?</p>
+    </section>
+    <section class="practice-shell" aria-label="컴퓨터와 쇼기 연습">
+      <div class="board-panel practice-board-panel">
+        <div class="turn-banner"><span id="turn-dot"></span><strong id="turn-label">내 차례 · 선공</strong><small id="move-count">0수</small></div>
+        <div class="captured-area opponent-hand"><span>컴퓨터의 말</span><div id="opponent-hand"></div></div>
+        <div class="board-wrap">
+          <div class="file-labels" aria-hidden="true"><span>9</span><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+          <div class="shogi-board" id="practice-board" role="group" aria-label="9×9 쇼기판. 내 말을 선택하고 이동할 칸을 누르세요."></div>
+          <div class="rank-labels" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>七</span><span>八</span><span>九</span></div>
+        </div>
+        <div class="captured-area player-hand"><span>나의 말받침</span><div id="player-hand"></div></div>
+        <div class="board-legend"><span><i class="legend-dot legal"></i>이동 가능</span><span><i class="legend-dot zone"></i>상대 진영 · 승격 지역</span><span>↑ 나의 전진 방향</span></div>
+      </div>
+      <aside class="practice-sidebar">
+        <div class="room-heading"><span class="eyebrow">YOUR PRACTICE PARTNER</span><h2>함께 두는 한 판</h2></div>
+        <label class="field-label" for="ai-level">컴퓨터 난이도</label>
+        <select id="ai-level"><option value="rookie">왕초보 · 규칙부터 천천히</option><option value="beginner" selected>초보 · 포획과 승격 연습</option><option value="intermediate">중급 · 상대의 응수 생각하기</option><option value="advanced">고급 · 다음 수까지 읽기</option></select>
+        <p class="field-help" id="level-help">한 수의 이득을 살펴보는 연습 상대입니다.</p>
+        <div id="match-status" class="match-status" role="status" aria-live="polite">내 말을 선택하면 이동할 수 있는 칸이 표시됩니다.</div>
+        <div class="selected-guide" id="selected-guide"><span class="guide-symbol">歩</span><div><strong>첫 수는 가볍게</strong><p>보병은 앞으로 한 칸. 초록 점이 있는 칸을 눌러 이동하세요.</p></div></div>
+        <div class="practice-actions">
+          <button class="button button-secondary" id="hint-move" type="button">추천 한 수</button>
+          <button class="button button-secondary" id="undo-move" type="button">한 차례 무르기</button>
+          <button class="button button-primary" id="new-match" type="button">새 대국 <span>↗</span></button>
+          <button class="text-button" id="resign" type="button">이번 대국 기권하기</button>
+        </div>
+        <div class="record-heading"><h3>한 수의 기록</h3><span id="save-status">이 기기에 자동 저장</span></div>
+        <ol id="move-history" class="move-history" aria-label="대국 기록"></ol>
+        <details class="practice-rules"><summary>연습 대국 규칙과 도움말</summary>
+          <p>선택 → 이동 칸 클릭. 잡은 말은 말받침에서 선택해 빈 칸에 놓습니다. 승격은 적진 세 줄에 들어가거나 나오는 수에서 선택하며, 보병·향차·계마가 더 전진할 수 없는 칸에서는 자동 승격합니다.</p>
+          <p>왕수 방치, 같은 세로줄의 보병 중복 투입(이보), 움직일 수 없는 칸 투입, 보병 투입으로 즉시 외통 만들기는 허용하지 않습니다.</p>
+          <p>동일한 판·말받침·차례가 네 번 반복되면 무승부, 연속 왕수에 의한 반복은 왕수를 건 쪽의 패배입니다. 입옥 선언승과 대국 시계는 아직 지원하지 않는 연습 모드입니다.</p>
+          <p>컴퓨터는 브라우저에서 작동하는 경량 상대입니다. 난이도는 공인 급수가 아니며, 기기 속도에 따라 수읽기 깊이가 달라집니다. 600수 이후에는 저장 공간 보호를 위해 새 대국을 시작해 주세요.</p>
+          <a href="https://www.shogi.or.jp/faq/rules/" target="_blank" rel="noreferrer">일본쇼기연맹 규칙 안내 ↗</a>
+        </details>
+      </aside>
+    </section>
+    <div class="practice-bottom"><span>정답을 찾던 열두 수에서, 직접 고르는 한 수로.</span><a href="/shogi/">튜토리얼 다시 보기 →</a></div>
+  </main>
+  <dialog id="promotion-dialog" aria-labelledby="promotion-title"><form method="dialog"><p class="eyebrow">PROMOTION</p><h2 id="promotion-title">승격할까요?</h2><p id="promotion-copy"></p><div class="dialog-actions"><button class="button button-primary" value="yes">승격하기</button><button class="button button-secondary" value="no">그대로 두기</button><button class="text-button" value="cancel">이동 취소</button></div></form></dialog>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title"><form method="dialog"><p class="eyebrow">PRACTICE ROOM</p><h2 id="confirm-title"></h2><p id="confirm-copy"></p><div class="dialog-actions"><button class="button button-primary" value="yes">확인</button><button class="button button-secondary" value="cancel">계속 연습하기</button></div></form></dialog>
+</body>
+</html>

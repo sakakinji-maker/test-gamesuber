@@ -25,8 +25,8 @@ const GAMES = [
   },
   {
     id: 'shogi', category: 'strategy', title: '한 수씩 배우는 쇼기', genre: 'BOARD · STRATEGY',
-    description: '왕초보부터 고급까지 이동, 승격, 수비와 외통을 직접 움직이며 배우는 12문제 쇼기 튜토리얼.',
-    path: '/shogi/', symbol: '王', accent: '#e8b45a', label: 'BOARD GAME', status: 'Tutorial · 12 Challenges',
+    description: '12문제로 규칙을 익히고 컴퓨터와 연습 대국! 난이도 4단계, 추천 한 수, 무르기로 배우는 쇼기.',
+    path: '/shogi/', symbol: '王', accent: '#e8b45a', label: 'BOARD GAME', status: '12 Challenges · AI Practice',
     tech: ['RULE DESIGN', 'TUTORIAL UX', 'JAVASCRIPT'],
   },
 ];
