@@ -5,10 +5,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const E = require('../public/shogi/engine');
+const D = require('../public/shogi/strategies-data');
 const html = fs.readFileSync(path.join(__dirname, '../public/shogi/practice.html'), 'utf8');
 const controller = fs.readFileSync(path.join(__dirname, '../public/shogi/practice.js'), 'utf8');
 
-function boot(saved, {storageFailure = false, workerFailure = false} = {}) {
+function boot(saved, {storageFailure = false, workerFailure = false, search = ''} = {}) {
   const nodes = new Map();
   const timers = new Map();
   const workers = [];
@@ -54,8 +55,8 @@ function boot(saved, {storageFailure = false, workerFailure = false} = {}) {
     terminate() { this.terminated = true; }
     respond() { this.onmessage({data:{id:this.data.id,move:E.chooseMove(this.data.state,this.data.level,{timeMs:30})}}); }
   }
-  const window = {Shogi:E,listeners:{},addEventListener(type,callback){this.listeners[type]=callback;}};
-  vm.runInNewContext(controller, {window,document,Worker,
+  const window = {Shogi:E,ShogiStrategies:D,location:{search,pathname:'/shogi/practice.html'},history:{replaceState(){window.location.search='';}},listeners:{},addEventListener(type,callback){this.listeners[type]=callback;}};
+  vm.runInNewContext(controller, {window,document,Worker,URLSearchParams,
     localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>{if(storageFailure)throw new Error('Storage blocked');storage.set(key,value);}},
     setTimeout:callback=>{timers.set(++timerId,callback);return timerId;},clearTimeout:id=>timers.delete(id),
   });
@@ -184,4 +185,39 @@ test('promotion dialog offers both choices, cancellation does not commit, and dr
   assert.ok(withHand.square(4,4).className.includes('legal'));
   withHand.square(4,4).click();
   assert.equal(withHand.snapshot().moves.at(-1).drop,'P');
+});
+
+test('strategy import waits for confirmation, replays opening and supports reload and undo', () => {
+  const original={version:1,level:'rookie',moves:[{from:[6,4],to:[5,4]},{from:[2,4],to:[3,4]}]};
+  const ui=boot(original,{search:'?strategy=anaguma'});
+  assert.equal(ui.$('strategy-start').hidden,false);
+  assert.equal(ui.$('move-count').textContent,'2수');
+  ui.$('strategy-start-button').click();ui.$('confirm-dialog').close('cancel');
+  assert.equal(ui.$('move-count').textContent,'2수');
+  assert.equal(ui.snapshot().moves.length,2);
+  ui.$('strategy-start-button').click();ui.$('confirm-dialog').close('yes');
+  assert.equal(ui.$('move-count').textContent,'26수');
+  assert.equal(ui.snapshot().level,'rookie');
+  assert.equal(ui.snapshot().moves.length,26);
+  assert.equal(ui.workers.length,0);
+  assert.match(ui.square(8,0).attributes['aria-label'],/내 왕장/);
+  assert.equal(ui.window.location.search,'');
+  const reloaded=boot(ui.snapshot());
+  assert.equal(reloaded.$('move-count').textContent,'26수');
+  reloaded.$('undo-move').click();
+  assert.equal(reloaded.snapshot().moves.length,24);
+  assert.equal(reloaded.$('turn-label').textContent,'내 차례 · 선공');
+});
+
+test('strategy import cancels an old AI response and allows ordinary play afterwards', () => {
+  const ui=boot({version:1,level:'beginner',moves:[{from:[6,4],to:[5,4]}]},{search:'?strategy=mino'});
+  const old=ui.workers.at(-1);
+  ui.$('strategy-start-button').click();ui.$('confirm-dialog').close('yes');old.respond();
+  assert.equal(ui.snapshot().moves.length,16);
+  assert.equal(old.terminated,true);
+  ui.square(6,8).click();ui.square(5,8).click();
+  assert.equal(ui.snapshot().moves.length,17);
+  ui.workers.at(-1).respond();
+  assert.equal(ui.snapshot().moves.length,18);
+  assert.equal(ui.$('turn-label').textContent,'내 차례 · 선공');
 });

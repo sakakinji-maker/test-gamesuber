@@ -223,6 +223,24 @@
     pendingConfirm = action; $('confirm-title').textContent = title; $('confirm-copy').textContent = copy;
     $('confirm-dialog').returnValue = ''; $('confirm-dialog').showModal();
   }
+  const strategyId = window.location?.search && new URLSearchParams(window.location.search).get('strategy');
+  const strategy = window.ShogiStrategies?.lessons.find(lesson => lesson.id === strategyId);
+  if (strategy) {
+    $('strategy-start').hidden = false;
+    $('strategy-start-title').textContent = `${strategy.title} · 배운 진형으로 연습`;
+    $('strategy-start-copy').textContent = '아래 판은 현재 대국입니다. 시작 버튼을 누르면 수업을 마친 진형으로 바뀌고, 이후에는 컴퓨터가 자유롭게 응수합니다.';
+    $('strategy-review').href = `/shogi/strategies.html#${strategy.id}`;
+    $('strategy-start-button').addEventListener('click', () => confirmAction(`${strategy.title} 진형에서 시작할까요?`,
+      '현재 대국과 저장 기록을 수업의 예시 수순으로 바꿉니다. 컴퓨터 난이도는 유지되고, 학습 완료 기록은 그대로 남습니다.', () => {
+        // Replay the complete legal opening; ordinary save/undo/restore keep working.
+        const restored = E.restore({ version: 1, level, moves: window.ShogiStrategies.transcript(strategy) });
+        cancelJob(); ({ state, states, moves } = restored); clearSelection(); available = E.legalMoves(state);
+        showGuide('K'); save(); render(); message(`${strategy.title} 진형에서 내 차례입니다. ${strategy.next}`);
+        $('strategy-start-copy').textContent = strategy.next;
+        $('strategy-start-button').hidden = true;
+        window.history.replaceState(null, '', window.location.pathname);
+      }));
+  }
   $('confirm-dialog').addEventListener('close', () => {
     const action = pendingConfirm; pendingConfirm = null;
     if ($('confirm-dialog').returnValue === 'yes') action?.();

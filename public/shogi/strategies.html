@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="동굴곰, 미노, 망루, 은관과 봉은을 한국어 설명과 단계별 쇼기 실습으로 배워보세요.">
+  <meta name="theme-color" content="#f4efe4">
+  <title>전법과 울타리 배우기 | 한 수씩 배우는 쇼기</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="practice.css">
+  <link rel="stylesheet" href="strategies.css">
+  <script src="engine.js" defer></script>
+  <script src="strategies-data.js" defer></script>
+  <script src="strategies.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="/shogi/">← 기본 튜토리얼</a>
+    <div class="topbar-title"><span class="title-mark" aria-hidden="true">金</span><div><strong>한 수씩 배우는 쇼기</strong><small>STRATEGY NOTEBOOK</small></div></div>
+    <a class="sound-toggle" href="/shogi/practice.html">연습 대국 →</a>
+  </header>
+  <main>
+    <section class="intro practice-intro">
+      <div><p class="eyebrow">7 LESSONS · 전법과 울타리</p><h1>이 한 수에는,<br><em>이유가 있어요.</em></h1></div>
+      <p>동굴곰은 어떻게 만들까요? 은장은 언제 공격할까요?<br>한국어로 이해하고, 직접 두고, 컴퓨터와 이어서 연습하세요.</p>
+    </section>
+    <nav class="learning-route" aria-label="학습 순서"><a href="/shogi/">01 말의 움직임</a><span aria-current="page">02 전법과 울타리</span><a href="/shogi/practice.html">03 자유 대국</a></nav>
+    <section class="strategy-library" aria-labelledby="library-title">
+      <div class="library-heading"><div><p class="eyebrow">CHOOSE YOUR NEXT MOVE</p><h2 id="library-title">오늘 배울 한 가지</h2></div><p id="completion-count" role="status">0 / 7 수업 완료</p></div>
+      <div class="strategy-filters"><label for="strategy-search">용어 찾기<input id="strategy-search" type="search" placeholder="동굴곰, 아나구마, 봉은…"></label><label for="strategy-category">종류<select id="strategy-category"><option value="all">전체</option><option>전법</option><option>공격</option><option>수비</option></select></label></div>
+      <div id="strategy-cards" class="strategy-cards" aria-label="수업 선택"></div>
+      <p id="search-empty" hidden>일치하는 용어가 없어요. 한국어 이름이나 일본어 발음으로 다시 찾아보세요.</p>
+    </section>
+    <section id="strategy-lesson" class="strategy-lesson" aria-labelledby="strategy-title">
+      <div class="strategy-heading"><div><p id="strategy-meta" class="eyebrow"></p><h2 id="strategy-title" tabindex="-1"></h2><p id="strategy-japanese"></p></div><a id="strategy-source" target="_blank" rel="noopener noreferrer">한국어 해설 읽기 ↗</a></div>
+      <p id="strategy-explanation" class="strategy-explanation"></p>
+      <div class="strategy-notes"><div><strong>이럴 때 좋아요</strong><p id="strategy-strength"></p></div><div><strong>이 점은 조심해요</strong><p id="strategy-caution"></p></div></div>
+      <div class="practice-shell">
+        <div class="board-panel practice-board-panel">
+          <div class="turn-banner"><span></span><strong id="strategy-turn">내 차례 · 선공</strong><small>↑ 아래에서 위로 전진</small></div>
+          <div class="captured-area opponent-hand"><span>상대의 말받침</span><div id="strategy-opponent-hand"></div></div>
+          <div class="board-wrap">
+            <div class="file-labels" aria-hidden="true"><span>9</span><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+            <div id="strategy-board" class="shogi-board" role="group" aria-label="쇼기 실습판. 내 말을 선택한 뒤 이동할 칸을 누르세요."></div>
+            <div class="rank-labels" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>七</span><span>八</span><span>九</span></div>
+          </div>
+          <div class="captured-area player-hand"><span>나의 말받침</span><div id="strategy-player-hand"></div></div>
+          <div class="board-legend"><span><i class="legend-dot legal"></i>이동 가능</span><span><i class="legend-dot target"></i>힌트</span><span>노란 칸 · 내가 방금 둔 수</span></div>
+        </div>
+        <aside class="practice-sidebar">
+          <p class="eyebrow">PLAY IT YOURSELF</p><h3 id="step-count"></h3>
+          <progress id="strategy-progress" max="1" value="0" aria-label="현재 수업 진행률"></progress>
+          <div class="match-status" id="strategy-feedback" role="status" aria-live="polite"></div>
+          <p id="step-reason" class="step-reason"></p>
+          <p class="field-help">내 말을 누른 뒤 도착 칸을 누르세요. 상대는 정해진 예시 수를 자동으로 둡니다. 실전에서는 상대의 수에 따라 순서가 달라져요.</p>
+          <div class="practice-actions">
+            <button id="strategy-hint" class="button button-secondary" type="button">출발·도착 칸 힌트</button>
+            <button id="strategy-back" class="button button-secondary" type="button">한 단계 뒤로</button>
+            <button id="strategy-reset" class="button button-secondary" type="button">처음부터 다시</button>
+            <button id="strategy-preview" class="button button-secondary" type="button" aria-pressed="false">완성 모습 보기</button>
+          </div>
+          <div id="strategy-finish" hidden><h3>이제 직접 이어 두세요.</h3><p id="strategy-next-tip"></p><a id="strategy-play" class="button button-primary">이 진형으로 컴퓨터와 대국 →</a><button id="strategy-next" type="button" class="text-button">다음 수업 →</button></div>
+          <details class="practice-rules"><summary>기보 읽는 법과 이번 수순</summary><p>7六은 위쪽 숫자 7의 세로줄과 오른쪽 六(여섯째)의 가로줄이 만나는 칸이에요. 선수는 아래쪽입니다. 이 실습은 일반 초기 배치에서 시작합니다.</p><ol id="strategy-record" class="move-history"></ol></details>
+        </aside>
+      </div>
+    </section>
+    <section class="strategy-glossary" aria-labelledby="glossary-title"><p class="eyebrow">QUICK REFERENCE</p><h2 id="glossary-title">설명이 더 쉬워지는 말</h2><dl>
+      <div><dt>전법</dt><dd>초반에 말을 배치하고 싸움을 준비하는 방식. 앉은비차·몰이비차는 비차의 위치로 나누는 큰 계열이에요.</dd></div>
+      <div><dt>울타리 · 가코이(囲い)</dt><dd>왕을 보호하도록 여러 말을 배치한 수비 진형. 동굴곰·미노·망루가 여기에 속해요.</dd></div>
+      <div><dt>급전</dt><dd>수비를 간단히 준비하고 비교적 일찍 공격에 들어가는 방식이에요.</dd></div>
+      <div><dt>지구전</dt><dd>진형을 충분히 정비하면서 긴 싸움을 준비하는 방식이에요.</dd></div>
+    </dl><a href="https://armishel.tistory.com/397" target="_blank" rel="noopener noreferrer">한국어 전법 개요 읽기 ↗</a>
+    <details class="practice-rules source-note"><summary>『3월의 라이온』과 한국어 표기 참고</summary><p>국내 애니메이션 소개에서 ‘앉은비차’, ‘동굴곰’, ‘풍차’라는 표기를 확인할 수 있습니다. 단행본 전체의 번역 표기를 대조한 목록은 아닙니다. 이 페이지의 수순은 일반 쇼기 자료를 바탕으로 직접 구성한 학습용 예시입니다. ‘풍차’는 소개문에서 확인한 표기이며 원어와의 정확한 대응은 이 자료에서 다루지 않습니다.</p><a href="https://laftel.net/player/42407/77176" target="_blank" rel="noopener noreferrer">라프텔 작품 소개 ↗</a><p>각 수업에는 한국어 설명 출처를 연결했습니다. 참고 글은 2008년 자료이며, 여기서는 기본 명칭과 원리를 다룹니다.</p></details></section>
+    <noscript><p>말을 움직이는 실습을 하려면 브라우저에서 JavaScript를 켜 주세요.</p></noscript>
+  </main>
+  <footer><span>HS · GAME LAB</span><a href="/shogi/">기본 튜토리얼</a><a href="/shogi/practice.html">연습 대국 →</a></footer>
+</body>
+</html>

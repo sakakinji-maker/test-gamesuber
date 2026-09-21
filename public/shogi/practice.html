@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="practice.css">
   <script src="engine.js" defer></script>
+  <script src="strategies-data.js" defer></script>
   <script src="practice.js" defer></script>
 </head>
 <body>
@@ -21,6 +22,12 @@
     <section class="intro practice-intro">
       <div><p class="eyebrow">LESSON TO PLAY · 컴퓨터 연습 대국</p><h1>이제는,<br><em>나의 한 수.</em></h1></div>
       <p>틀려도 괜찮아요. 무르고, 힌트를 보고, 다시 두세요.<br>당신은 아래쪽 선공입니다. 첫 보병부터 움직여 볼까요?</p>
+    </section>
+    <nav class="practice-bottom" aria-label="학습 메뉴"><span>동굴곰·망루·미노, 이름부터 직접 두는 방법까지.</span><a href="/shogi/strategies.html">전법과 울타리 배우기 →</a></nav>
+    <section id="strategy-start" class="strategy-start" hidden aria-labelledby="strategy-start-title">
+      <h2 id="strategy-start-title"></h2><p id="strategy-start-copy"></p>
+      <button id="strategy-start-button" class="button button-primary" type="button">배운 진형에서 시작</button>
+      <a id="strategy-review">수업 다시 보기 →</a>
     </section>
     <section class="practice-shell" aria-label="컴퓨터와 쇼기 연습">
       <div class="board-panel practice-board-panel">

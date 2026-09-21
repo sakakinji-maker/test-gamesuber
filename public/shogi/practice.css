@@ -1,4 +1,9 @@
 .practice-intro { padding-block: 45px 35px; }
+.strategy-start { border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:24px; background:#eef1e7; }
+.strategy-start h2 { margin-top:0; font-family:Batang,serif; font-size:24px; }
+.strategy-start p { font-size:13px; line-height:1.8; }
+.strategy-start a { display:inline-block; margin:12px; font-size:13px; text-decoration:underline; }
+[hidden] { display:none !important; }
 .practice-intro h1 { font-size: clamp(42px, 5vw, 62px); }
 .practice-shell { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr); background: #fffdf8; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); }
 .practice-board-panel { justify-content: center; padding: 32px; }
