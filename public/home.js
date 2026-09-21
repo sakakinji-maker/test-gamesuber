@@ -25,8 +25,8 @@ const GAMES = [
   },
   {
     id: 'shogi', category: 'strategy', title: '한 수씩 배우는 쇼기', genre: 'BOARD · STRATEGY',
-    description: '12문제와 전법·울타리 7개 수업으로 배우는 쇼기. 동굴곰·봉은을 직접 두고 컴퓨터와 이어서 대국하세요.',
-    path: '/shogi/', symbol: '王', accent: '#e8b45a', label: 'BOARD GAME', status: '12 Challenges · 7 Lessons · AI',
+    description: '12문제와 전법 수업으로 익히는 쇼기. 컴퓨터와 연습하거나 방을 만들어 친구와 실시간 대국하세요.',
+    path: '/shogi/', symbol: '王', accent: '#e8b45a', label: 'BOARD GAME', status: 'Tutorial · AI · Multiplayer',
     tech: ['RULE DESIGN', 'TUTORIAL UX', 'JAVASCRIPT'],
   },
 ];

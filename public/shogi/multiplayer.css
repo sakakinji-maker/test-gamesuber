@@ -1,0 +1,35 @@
+.connection-status { font-size:12px; color:var(--green); }
+.lobby-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:30px; }
+.lobby-card { border:1px solid var(--line); background:#fffdf8; border-radius:18px; padding:28px; min-width:0; }
+.lobby-card h2 { font-family:Batang,serif; font-size:25px; margin:8px 0 25px; }
+.lobby-card label,.invite-label { display:block; font-size:12px; margin:16px 0 9px; }
+.lobby-card input,#invite-link { width:100%; min-width:0; padding:13px; background:#fffdf8; color:var(--ink); border:1px solid var(--line); border-radius:8px; font:inherit; font-size:14px; }
+#create-room { width:100%; margin:15px 0 8px; }
+.join-fields { display:flex; gap:8px; }
+#room-code-input { text-transform:uppercase; letter-spacing:.1em; flex:1; }
+.list-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.rooms-list { list-style:none; padding:0; margin:0; max-height:320px; overflow-y:auto; }
+.rooms-list li { padding:16px 0; border-bottom:1px solid var(--line); font-size:13px; line-height:1.7; }
+.rooms-list li:has(button) { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.rooms-list strong,.rooms-list small { display:block; }
+.rooms-list small { color:var(--muted); }
+.room-bar { display:flex; justify-content:space-between; align-items:center; gap:20px; padding-top:12px; }
+#room-title { font:700 36px monospace; letter-spacing:.15em; margin:8px 0; }
+.room-tools { display:flex; gap:8px; flex-wrap:wrap; }
+#invite-link { font-size:12px; }
+.players-list { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:22px 0; }
+.player-seat { padding:18px; border:1px solid var(--line); border-radius:12px; background:#fffdf8; font-size:14px; }
+.player-seat.mine { border-color:var(--green); background:#eef1e7; }
+.player-seat small { display:block; color:var(--muted); font-size:12px; margin-top:8px; line-height:1.6; }
+.waiting-panel { text-align:center; border:1px dashed var(--wood-dark); border-radius:18px; padding:36px 20px; background:#f8f3e9; }
+.waiting-mark { font-size:50px; color:var(--wood-dark); }
+.waiting-panel h3 { font-family:Batang,serif; font-size:26px; margin:8px 0; }
+.waiting-panel p,.online-status { font-size:14px; line-height:1.8; }
+.waiting-panel button { margin-top:15px; }
+.online-status { padding:15px; background:#eef1e7; border-left:3px solid var(--green); }
+#match-heading { font-family:Batang,serif; font-size:25px; }
+#online-record { max-height:260px; }
+#online-record li { display:block; }
+.multi-footnote { margin:28px 0 45px; color:var(--muted); font-size:12px; line-height:1.8; }
+input:focus-visible { outline:3px solid var(--green); outline-offset:2px; }
+@media(max-width:720px) { .lobby-grid { grid-template-columns:1fr; } .room-bar { align-items:start; flex-direction:column; gap:8px; } .lobby-card { padding:22px; } .players-list { gap:8px; } .player-seat { padding:13px; } }

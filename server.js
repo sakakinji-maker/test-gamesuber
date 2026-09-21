@@ -4,11 +4,12 @@ const fs = require('node:fs');
 const { DatabaseSync } = require('node:sqlite');
 const { Server } = require('socket.io');
 const { Room } = require('./gameEngine');
+const { attachShogi } = require('./shogiMultiplayer');
 
 const ROOT = __dirname;
 const PUBLIC_ROOT = path.join(ROOT, 'public'); // 실제로 브라우저에 내려주는 파일은 이 폴더 안에서만
 const DB_PATH = path.join(ROOT, 'game-records.db');
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 const db = new DatabaseSync(DB_PATH);
 db.exec(`
@@ -117,6 +118,7 @@ const server = http.createServer(async (req, res) => {
 // ---------- 실시간 멀티플레이 (Socket.IO) ----------
 
 const io = new Server(server);
+attachShogi(io);
 const rooms = new Map();
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 0/O/1/I 처럼 헷갈리는 글자는 뺌
 

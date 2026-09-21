@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="쇼기 방을 만들고 친구를 초대하세요. 상대를 기다리는 대기실과 실시간 2인 대국.">
+  <meta name="theme-color" content="#f4efe4"><title>함께 두는 쇼기 | 멀티플레이</title>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="practice.css"><link rel="stylesheet" href="multiplayer.css">
+  <script src="/socket.io/socket.io.js" defer></script><script src="engine.js" defer></script><script src="multiplayer.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><a class="back-link" href="/shogi/">← 쇼기 홈</a><div class="topbar-title"><span class="title-mark" aria-hidden="true">王</span><div><strong>함께 두는 쇼기</strong><small>MULTIPLAYER ROOM</small></div></div><a class="sound-toggle" href="/shogi/strategies.html">전법 배우기 →</a></header>
+  <main>
+    <section class="intro practice-intro"><div><p class="eyebrow">ONLINE · TWO PLAYERS</p><h1>방 하나,<br><em>우리의 한 판.</em></h1></div><p>방을 열고 상대를 기다려 보세요.<br>친구에게 방 코드를 보내거나, 기다리는 방에 입장하세요.</p></section>
+    <p id="connection-status" class="connection-status" role="status">서버에 연결하고 있어요…</p>
+    <div id="multi-message" class="match-status" role="status" aria-live="polite">연결이 완료되면 방을 만들 수 있어요.</div>
+    <section id="lobby-panel" class="lobby-grid" aria-label="방 만들기와 입장">
+      <div class="lobby-card"><p class="eyebrow">YOUR NAME</p><h2>어떤 이름으로 둘까요?</h2><label for="nickname">닉네임</label><input id="nickname" maxlength="12" autocomplete="nickname" placeholder="최대 12글자">
+        <button id="create-room" class="button button-primary" type="button" disabled>새 방 만들고 기다리기 →</button>
+        <form id="join-form"><label for="room-code-input">친구에게 받은 방 코드</label><div class="join-fields"><input id="room-code-input" maxlength="6" placeholder="예: AB3D7K" autocapitalize="characters" autocomplete="off" spellcheck="false"><button id="join-room" class="button button-secondary" type="submit" disabled>입장</button></div></form>
+        <p class="field-help">방장은 선공, 입장한 상대는 후공입니다. 두 명이 모이면 방장이 시작해요. 방은 대기 목록에 공개됩니다.</p>
+      </div>
+      <div class="lobby-card"><div class="list-heading"><div><p class="eyebrow">WAITING FOR YOU</p><h2>상대를 기다리는 방</h2></div><button id="refresh-rooms" type="button" class="text-button">새로고침</button></div><ul id="rooms-list" class="rooms-list"><li>연결을 기다리고 있어요.</li></ul></div>
+    </section>
+    <section id="room-panel" hidden aria-labelledby="room-title">
+      <div class="room-bar"><div><p class="eyebrow">ROOM CODE</p><h2 id="room-title"></h2></div><div class="room-tools"><button id="copy-code" type="button" class="button button-secondary">코드 복사</button><button id="copy-link" type="button" class="button button-secondary">초대 링크 복사</button><button id="leave-room" type="button" class="text-button">방 나가기</button></div></div>
+      <label class="invite-label" for="invite-link">초대 링크 · 친구에게 보내세요</label><input id="invite-link" readonly aria-label="친구에게 공유할 초대 링크">
+      <div id="players-list" class="players-list" aria-label="방 참가자"></div>
+      <div id="waiting-panel" class="waiting-panel"><span class="waiting-mark" aria-hidden="true">☖</span><h3 id="waiting-title">상대를 기다리고 있어요.</h3><p id="waiting-copy"></p><button id="start-match" class="button button-primary" type="button" disabled>두 명이 모이면 시작할 수 있어요</button></div>
+      <section id="online-match" class="practice-shell" hidden aria-label="온라인 쇼기 대국">
+        <div class="board-panel practice-board-panel"><div class="turn-banner"><span></span><strong id="online-turn"></strong><small id="online-ply"></small></div>
+          <div class="captured-area opponent-hand"><span id="their-hand-label">상대의 말받침</span><div id="online-their-hand"></div></div>
+          <div class="board-wrap"><div id="online-files" class="file-labels" aria-hidden="true"></div><div id="online-board" class="shogi-board" role="group" aria-label="온라인 쇼기판. 자신의 말을 선택한 뒤 도착 칸을 누르세요."></div><div id="online-ranks" class="rank-labels" aria-hidden="true"></div></div>
+          <div class="captured-area player-hand"><span>나의 말받침</span><div id="online-my-hand"></div></div>
+          <div class="board-legend"><span><i class="legend-dot legal"></i>이동 가능</span><span>내 말이 아래쪽 · ↑ 전진</span></div>
+        </div>
+        <aside class="practice-sidebar"><p class="eyebrow">ONE MOVE AT A TIME</p><h2 id="match-heading">상대와 함께 두는 한 판</h2><p id="online-status" class="online-status" role="status" aria-live="polite"></p><p id="move-guide" class="field-help">말을 선택하면 이동할 수 있는 칸이 표시됩니다. 잡은 말은 나의 말받침에서 선택하세요.</p>
+          <div class="practice-actions"><button id="resign-match" type="button" class="button button-secondary">기권하기</button><button id="rematch" type="button" class="button button-primary" hidden>다시 두기 요청</button></div>
+          <div class="record-heading"><h3>대국 기록</h3><span>최근 100수</span></div><ol id="online-record" class="move-history"></ol>
+          <details class="practice-rules"><summary>온라인 대국 안내</summary><p>상대 차례에는 말을 움직일 수 없어요. 승격과 잡은 말 투입은 연습 대국과 같습니다. 실시간 대국에서는 힌트와 무르기를 제공하지 않습니다.</p><p>연결이 끊어지면 대국을 잠시 멈추고 90초 동안 복귀를 기다려요. 시간이 지나거나 대국 중 방을 나가면 패배 처리됩니다. 종료 후 두 사람이 다시 두기를 요청하면 새 대국이 시작됩니다.</p><p>입옥 선언승과 대국 시계는 지원하지 않습니다. 같은 국면의 반복과 연속 왕수 반복을 판정하며 600수에 도달하면 무승부로 종료됩니다.</p></details>
+        </aside>
+      </section>
+    </section>
+    <p class="multi-footnote">같은 탭에서 새로고침하면 방으로 자동 복귀합니다. 대기실은 30분 동안 활동이 없으면 닫히며, 서버가 재시작되면 방과 대국이 초기화됩니다.</p>
+    <noscript><p>멀티플레이에는 JavaScript가 필요합니다.</p></noscript>
+  </main>
+  <dialog id="multi-promotion" aria-labelledby="multi-promotion-title"><form method="dialog"><h2 id="multi-promotion-title">승격할까요?</h2><p id="multi-promotion-copy"></p><div class="dialog-actions"><button class="button button-primary" value="yes">승격하기</button><button class="button button-secondary" value="no">그대로 두기</button><button class="text-button" value="cancel">이동 취소</button></div></form></dialog>
+  <dialog id="multi-confirm" aria-labelledby="multi-confirm-title"><form method="dialog"><h2 id="multi-confirm-title"></h2><p id="multi-confirm-copy"></p><div class="dialog-actions"><button class="button button-primary" value="yes">확인</button><button class="button button-secondary" value="cancel">계속 두기</button></div></form></dialog>
+</body>
+</html>
