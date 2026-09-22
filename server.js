@@ -5,6 +5,7 @@ const { DatabaseSync } = require('node:sqlite');
 const { Server } = require('socket.io');
 const { Room } = require('./gameEngine');
 const { attachShogi } = require('./shogiMultiplayer');
+const { attachBaduk } = require('./badukMultiplayer');
 
 const ROOT = __dirname;
 const PUBLIC_ROOT = path.join(ROOT, 'public'); // 실제로 브라우저에 내려주는 파일은 이 폴더 안에서만
@@ -67,6 +68,7 @@ function serveStatic(req, res) {
   else if (urlPath === '/survival' || urlPath === '/survival/') urlPath = '/survival/index.html';
   else if (urlPath === '/ecodex' || urlPath === '/ecodex/') urlPath = '/ecodex/index.html';
   else if (urlPath === '/shogi' || urlPath === '/shogi/') urlPath = '/shogi/index.html';
+  else if (urlPath === '/baduk' || urlPath === '/baduk/') urlPath = '/baduk/index.html';
 
   const filePath = path.join(PUBLIC_ROOT, decodeURIComponent(urlPath));
   if (!filePath.startsWith(PUBLIC_ROOT)) { res.writeHead(403); res.end(); return; }
@@ -119,6 +121,7 @@ const server = http.createServer(async (req, res) => {
 
 const io = new Server(server);
 attachShogi(io);
+attachBaduk(io);
 const rooms = new Map();
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 0/O/1/I 처럼 헷갈리는 글자는 뺌
 

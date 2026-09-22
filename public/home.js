@@ -1,5 +1,11 @@
 const GAMES = [
   {
+    id: 'baduk', category: 'strategy', title: '한 수씩 배우는 바둑', genre: 'BOARD · STRATEGY',
+    description: '12개의 입문 문제로 시작하는 바둑. 9·13·19줄판에서 컴퓨터와 연습하거나 친구와 온라인 대국하세요.',
+    path: '/baduk/', symbol: '●', accent: '#d4b579', label: 'BOARD GAME', status: 'Tutorial · AI · Multiplayer',
+    tech: ['GO RULES', 'TUTORIAL UX', 'SOCKET.IO'],
+  },
+  {
     id: 'unfinished', category: 'story', title: '10년 뒤에 나를 찾아줘', genre: 'MYSTERY · STORY',
     description: '졸업 후 발견한 한 장의 쪽지. 옛 친구와 학교의 기억을 따라가는 15챕터 미스터리 스토리.',
     path: '/unfinished/', symbol: '✎', accent: '#ff786e', label: 'NARRATIVE GAME', status: 'Playable · 15 Chapters',
