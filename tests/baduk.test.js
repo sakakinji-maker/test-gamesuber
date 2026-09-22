@@ -1,5 +1,16 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const E=require('../public/baduk/engine'),L=require('../public/baduk/lessons');
+test('Go supply: size limits, legal moves spend stones, pass/illegal moves do not',()=>{
+ for(const [n,b,w]of [[9,41,40],[13,85,84],[19,181,180]]){const s=E.initialState(n);assert.equal(E.remaining(s,1),b);assert.equal(E.remaining(s,2),w);const t=E.play(s,0);assert.equal(E.remaining(t,1),b-1);assert.equal(E.remaining(E.play(t,null),2),w);assert.throws(()=>E.play(t,0));assert.equal(E.remaining(t,2),w);}
+});
+test('Go supply: captured stones are not replenished; exhausted AI passes; both can finish',()=>{
+ let s=setup([7,11,13],[12]);const before=E.remaining(s,2);s=E.play(s,17);assert.equal(E.remaining(s,2),before);
+ s=E.initialState(9);s.captures=[0,40,41];
+ assert.equal(E.remaining(s,1),0);assert.equal(E.remaining(s,2),0);
+ for(const level of [0,1,2,3])assert.equal(E.suggest(s,level),null);
+ assert.throws(()=>E.play(s,0),/남은 돌/);
+ s=E.play(E.play(s,null),null);assert.equal(s.phase,'scoring');assert.throws(()=>E.resume(s),/소진/);assert.equal(E.finish(s).phase,'finished');
+});
 function setup(black,white,size=5){const s=E.initialState(size);black.forEach(i=>s.board[i]=1);white.forEach(i=>s.board[i]=2);s.history=[E.key(s.board)];return s;}
 test('Go: sizes, turn order and immutable placement',()=>{for(const n of [9,13,19])assert.equal(E.initialState(n).board.length,n*n);const s=E.initialState(),t=E.play(s,40);assert.equal(s.board[40],0);assert.equal(t.board[40],1);assert.equal(t.turn,2);assert.throws(()=>E.play(t,40));for(const i of [-1,81,1.5,'4',undefined])assert.throws(()=>E.play(s,i));});
 test('Go: edge neighbors, groups and shared liberties',()=>{assert.deepEqual(E.neighbors(0,5),[5,1]);const s=setup([11,12],[]);assert.equal(E.group(s.board,11,5).stones.length,2);assert.equal(E.group(s.board,11,5).liberties.size,6);});
@@ -12,4 +23,3 @@ test('Go: dead groups toggle together and final score is immutable',()=>{let s=s
 test('Go: save replays moves, scoring and resignation; corrupted data rejected',()=>{const data={version:1,size:9,moves:[{type:'play',index:40},{type:'play',index:null},{type:'play',index:null},{type:'dead',index:40},{type:'finish'}]};assert.equal(E.restore(data).result.winner,2);assert.throws(()=>E.restore({...data,moves:[{type:'play',index:999}]}));assert.throws(()=>E.restore({...data,version:9}));assert.equal(E.restore({...data,moves:[{type:'resign',color:1}]}).result.winner,2);});
 test('Go: all 12 lessons are legal and teaching outcomes hold',()=>{assert.equal(L.length,12);L.forEach(l=>assert.doesNotThrow(()=>E.play(setup(l.black,l.white),l.answer)));for(const [i,captured] of [[2,1],[5,1],[6,2],[7,1]])assert.equal(E.play(setup(L[i].black,L[i].white),L[i].answer).captures[1],captured);const s=E.play(setup(L[10].black,[]),7);assert.deepEqual([...E.group(s.board,7,5).liberties].sort((a,b)=>a-b),[6,8,15,16,17,18,19]);});
 test('Go: AI all levels returns legal moves and conserves stones in self-play',()=>{for(const level of [0,1,2,3]){let s=E.initialState(9);for(let turn=0;turn<130&&s.phase==='play';turn++){const prior=JSON.stringify(s),i=E.suggest(s,level,()=>.4);assert.equal(JSON.stringify(s),prior);s=E.play(s,i);const placed=s.ply;assert.ok(s.board.filter(Boolean).length+s.captures[1]+s.captures[2]<=placed);for(let p=0;p<s.board.length;p++)if(s.board[p])assert.ok(E.group(s.board,p,s.size).liberties.size>0);}}});
-

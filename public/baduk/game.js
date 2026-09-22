@@ -23,7 +23,7 @@ function computer(isHint=false){
  const id=++job,started=Date.now();
  const fail=()=>{if(id!==job)return;cancelAI();render();say('컴퓨터 계산을 불러오지 못했어요. 힌트/계속 버튼으로 다시 시도하거나 새로고침해 주세요.');};
  try{
- worker=new Worker('ai-worker.js');jobTimer=setTimeout(fail,15000);worker.onerror=fail;
+ worker=new Worker('ai-worker.js?v=2');jobTimer=setTimeout(fail,15000);worker.onerror=fail;
  worker.onmessage=({data})=>{if(id!==job||mode!=='practice')return;if(data.error)return fail();
  clearTimeout(jobTimer);worker?.terminate();worker=null;
  jobTimer=setTimeout(()=>{if(id!==job||mode!=='practice')return;busy=false;
@@ -74,15 +74,20 @@ function render(){
  $('mission-label').textContent=mode==='learn'?'MISSION':'CURRENT TURN';$('mission').textContent=mode==='learn'?L[lesson].mission:state.result?resultText():state.phase==='scoring'?'사석을 확인하고 계가에 동의하세요.':mode==='online'&&!room?'방을 만들거나 코드로 입장하세요.':color(state.turn)+' 차례'+(mode==='practice'?(state.turn===human?' · 내가 둘 차례':' · 컴퓨터 차례'):(room?.you===state.turn?' · 내가 둘 차례':' · 상대 차례'));
  $('turn').textContent=state.result?'대국 종료':state.phase==='scoring'?'계가 확인':color(state.turn)+' 차례';$('turn-dot').style.background=state.turn===1?'#252620':'#ddd9cc';$('ply').textContent=state.ply+'수';
  $('black-count').textContent=state.captures[1];$('white-count').textContent=state.captures[2];
+ $('stone-supply').hidden=mode==='learn';
+ $('stone-supply').textContent='남은 돌 · 흑 '+E.remaining(state,1)+' / '+E.stoneLimit(state.size,1)+'개 · 백 '+E.remaining(state,2)+' / '+E.stoneLimit(state.size,2)+'개';
+ if(mode!=='learn'&&state.phase==='play'&&!state.result&&!E.remaining(state,state.turn))$('mission').textContent=color(state.turn)+'의 돌을 모두 사용했습니다. 패스해 주세요.';
  $('hint').hidden=mode==='online';$('hint').disabled=busy||Boolean(state.result)||state.phase!=='play';$('hint').textContent=mode==='practice'&&state.turn!==human?'컴퓨터 계속':'힌트 보기';
  $('reset-lesson').hidden=mode!=='learn';$('next').hidden=mode!=='learn';$('next').disabled=!solved;$('next').textContent=lesson===11?'연습 대국 시작 →':'다음 문제 →';
  $('pass').hidden=mode==='learn'&&L[lesson].answer!==null;$('pass').disabled=!canPlay();
+ $('pass').textContent=mode!=='learn'&&!E.remaining(state,state.turn)?'돌 소진 · 패스하기':'한 수 쉬기 · 패스';
  $('undo').hidden=mode!=='practice';$('undo').disabled=!moves.length;
  $('resign').hidden=mode==='learn';$('resign').disabled=Boolean(state.result)||(mode==='online'&&(!room||room.status!=='playing'||!connected||pending));
  $('scoring').hidden=state.phase!=='scoring'&&state.result?.reason!=='score';
  $('accept').hidden=Boolean(state.result);$('resume-play').hidden=Boolean(state.result);
  if(!$('scoring').hidden){const s=E.score(state);$('score-detail').textContent='흑 '+s.black+' = 돌 '+s.stones[1]+' + 빈자리 '+s.territory[1]+'\n백 '+s.white+' = 돌 '+s.stones[2]+' + 빈자리 '+s.territory[2]+' + 덤 6.5';$('agreement').textContent=state.result?'확정된 최종 점수입니다.':mode==='online'?'동의 '+(room?.scoreReady?.length||0)+' / 2 · 사석을 바꾸면 동의가 초기화됩니다.':'학습자가 사석을 검토합니다. AI가 생사를 판정하지 않습니다.';}
  $('accept').disabled=mode==='online'&&(!connected||pending||room?.players.some(p=>!p.connected)||room?.scoreReady?.includes(room.you));$('resume-play').disabled=mode==='online'&&(!connected||pending||room?.players.some(p=>!p.connected));
+ if(!E.remaining(state,1)&&!E.remaining(state,2))$('resume-play').disabled=true;
  $('record-panel').hidden=mode==='learn';$('records').replaceChildren();
  const records=mode==='online'?(room?.records||[]).map(r=>r.text):moves.filter(a=>a.type==='play').map((a,i)=>color(i%2+1)+' '+(a.index===null?'패스':E.coord(a.index,state.size)));
  records.slice(-200).forEach(t=>{const li=document.createElement('li');li.textContent=t;$('records').append(li);});

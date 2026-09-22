@@ -28,6 +28,16 @@ async function fixture(t) {
   async function start(a,b){assert.equal((await a.act('start')).ok,true);await until(()=>b.view.status==='playing');}
   return {client,pair,start,manager,advance(ms){clock+=ms;manager.sweep();}};
 }
+test('Baduk online: server rejects exhausted supply and allows passes to scoring',async t=>{
+ const f=await fixture(t),{a,b}=await f.pair();await f.start(a,b);
+ const r=f.manager.rooms.get(a.view.code);r.state.captures=[0,40,41];
+ assert.equal((await a.act('move',{move:{index:0}})).ok,false);
+ await a.act('move',{move:{index:null}});await until(()=>b.view.state.ply===1);
+ assert.equal((await b.act('move',{move:{index:1}})).ok,false);
+ await b.act('move',{move:{index:null}});await until(()=>a.view.state.phase==='scoring');
+ assert.equal((await a.act('continue')).ok,false);
+ await a.act('accept');await until(()=>b.view.scoreReady.length===1);await b.act('accept');await until(()=>a.view.status==='finished');
+});
 test('Baduk online: waiting room, authority, stale requests and private tokens',async t=>{
  const f=await fixture(t),a=await f.client(),b=await f.client(),c=await f.client();
  assert.equal((await a.send('create',{name:'흑',size:13})).ok,true);assert.equal(a.view.size,13);
@@ -80,4 +90,3 @@ test('Baduk online: server enforces suicide and ko; leave and lobby expiry',asyn
  await b.send('leave');await until(()=>a.view.status==='finished');assert.equal(a.view.state.result.winner,1);
  const c=await f.client();await c.send('create',{name:'대기'});const code=c.view.code;f.advance(1800001);assert.equal(f.manager.rooms.has(code),false);
 });
-

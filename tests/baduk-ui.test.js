@@ -28,8 +28,9 @@ test('Baduk UI: all lessons complete, wrong move does not complete, hints and re
  assert.equal(u.$('progress').textContent,'12 / 12 완료');u.$('next').click();assert.equal(u.$('board').children.length,81);
 });
 test('Baduk UI: practice AI moves and save replay; undo cancels stale worker',()=>{
- const u=boot();u.modes[1].click();u.click(20);const old=u.workers.at(-1);assert.equal(u.snapshot().moves.length,1);
- u.$('undo').click();old.respond();u.flush();assert.equal(u.snapshot().moves.length,0);
+ const u=boot();u.modes[1].click();assert.match(u.$('stone-supply').textContent,/흑 41 \/ 41개 · 백 40 \/ 40개/);u.click(20);const old=u.workers.at(-1);assert.equal(u.snapshot().moves.length,1);
+ assert.match(u.$('stone-supply').textContent,/흑 40 \/ 41개/);
+ u.$('undo').click();old.respond();u.flush();assert.equal(u.snapshot().moves.length,0);assert.match(u.$('stone-supply').textContent,/흑 41 \/ 41개/);
  u.click(20);u.workers.at(-1).respond();u.flush();assert.equal(u.snapshot().moves.length,2);
  const restored=boot(u.snapshot());restored.modes[1].click();assert.equal(restored.$('ply').textContent,'2수');
  restored.$('undo').click();assert.equal(restored.snapshot().moves.length,0);
@@ -50,4 +51,3 @@ test('Baduk UI: storage and worker failures remain usable; corrupted save handle
  const u=boot(null,{blocked:true,workerFails:true});u.modes[1].click();u.click(20);assert.equal(u.$('hint').disabled,false);assert.match(u.$('feedback').textContent,/계산/);assert.match(u.$('save-status').textContent,/저장할 수 없습니다/);
  const v=boot({version:1,size:9,moves:[{type:'play',index:999}]});v.modes[1].click();assert.equal(v.$('ply').textContent,'0수');
 });
-
