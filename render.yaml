@@ -8,3 +8,5 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 24.19.0
+      - key: ANTHROPIC_API_KEY
+        sync: false # 값은 Render 대시보드에서 직접 입력 (깃허브에 올리지 않음)

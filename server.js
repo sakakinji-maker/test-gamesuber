@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const { Room } = require('./gameEngine');
 const { attachShogi } = require('./shogiMultiplayer');
 const { attachBaduk } = require('./badukMultiplayer');
+const { handleAiChat } = require('./aiChat');
 
 const ROOT = __dirname;
 const PUBLIC_ROOT = path.join(ROOT, 'public'); // 실제로 브라우저에 내려주는 파일은 이 폴더 안에서만
@@ -111,6 +112,11 @@ const server = http.createServer(async (req, res) => {
       ORDER BY total_score DESC
     `).all();
     sendJSON(res, 200, rows);
+    return;
+  }
+
+  if (req.url === '/api/ai/chat' && req.method === 'POST') {
+    await handleAiChat(req, res, readBody, sendJSON);
     return;
   }
 
